@@ -9,7 +9,7 @@ void setupROS(){
 
 
 
-void handle_rpm_req( const chefbot_3::rpm& rpm_req ) {
+void handle_rpm_req( const chefbot::rpm& rpm_req ) {
 
   rpm_req1 = rpm_req.req_right;
   rpm_req2 = rpm_req.req_left;  

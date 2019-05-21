@@ -11,8 +11,8 @@
 //#include <geometry_msgs/Twist.h>
 #include <ros/time.h>
 #include "robot_specs.h"
-#include "chefbot_3/rpm.h"
-#include <chefbot_3/vect6.h>
+#include "chefbot/rpm.h"
+#include <chefbot/vect6.h>
 
 
 //Motor Shield headers
@@ -64,8 +64,8 @@ float Ki =   0;
 void publishRPM(unsigned long time);
 
 ros::NodeHandle nh;
-void handle_rpm_req( const chefbot_3::rpm& rpm_req);
-ros::Subscriber<chefbot_3::rpm> sub("rpm_req_msg", handle_rpm_req);
+void handle_rpm_req( const chefbot::rpm& rpm_req);
+ros::Subscriber<chefbot::rpm> sub("rpm_req_msg", handle_rpm_req);
 
 geometry_msgs::Vector3Stamped v3_msg;
 ros::Publisher v3_pub("rpm_act_msg", &v3_msg);

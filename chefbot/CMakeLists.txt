@@ -56,7 +56,7 @@ find_package(catkin REQUIRED COMPONENTS
    rpm_req.msg
    rpm_pid.msg
    rpm_act.msg
-   pwm.msg
+   rpm.msg
    vect4.msg
    vect6.msg
  )
