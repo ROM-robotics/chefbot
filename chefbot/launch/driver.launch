@@ -1,6 +1,6 @@
 <launch>
 
-  <include file="$(find chefbot_3)/launch/urdf.launch" />
+  <include file="$(find chefbot)/launch/urdf.launch" />
 
   <!--serial communication between arduino and pc via usb /-->
   <node name="arduino_serial_node" pkg="rosserial_python" type="serial_node.py" output="screen">
@@ -11,8 +11,7 @@
   
   
   
-  <node name="base_controller_node" pkg="chefbot_3" type="base_controller">
-    <param name="publish_tf" value="true" />
+  <node name="base_controller_node" pkg="chefbot" type="base_controller">
     <param name="publish_rate" value="10.0" />
     <param name="linear_scale_positive" value="0.99" />
     <param name="linear_scale_negative" value="0.99" />
@@ -20,7 +19,6 @@
     <param name="angular_scale_negative" value="1.0" />
     <param name="angular_scale_accel" value="0.0" />
     <param name="alpha" value="0.5" />
-    <param name="use_imu" value="true" />
   </node> 
 
 
@@ -43,9 +41,9 @@
 
   -->
   
-  <node name="twistToMotors" pkg="chefbot_3" type="twist_to_motors" output="screen"/>
+  <node name="twistToMotors" pkg="chefbot" type="twist_to_motors" output="screen"/>
 
-  <node name="velToImuRaw" pkg="chefbot_3" type="arduino_imu_raw" output="screen"/>
+  <node name="velToImuRaw" pkg="chefbot" type="arduino_imu_raw" output="screen"/>
 
   
 </launch>

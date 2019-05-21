@@ -10,7 +10,7 @@ int main(int argc,char** argv)
 		goal_dist = atoll(argv[2]);
 	}
 	else{
-		ROS_INFO("Usage: rosrun chefbot_3 forward_1m <linear.x> <goal_distance>");
+		ROS_INFO("Usage: rosrun chefbot forward_1m <linear.x> <goal_distance>");
 		linear_vel = 0.2;
 		goal_dist = 1.0;
 	}

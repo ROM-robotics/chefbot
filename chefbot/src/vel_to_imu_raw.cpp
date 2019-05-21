@@ -1,10 +1,10 @@
 #include <ros/ros.h>
-#include <chefbot_3/vect6.h>
+#include <chefbot/vect6.h>
 #include <sensor_msgs/Imu.h>
 
 float gyroZ,gyroX,gyroY,accelX,accelY,accelZ;
 
-void callback(const chefbot_3::vect6::ConstPtr &msg)
+void callback(const chefbot::vect6::ConstPtr &msg)
 {
 	ROS_INFO("GYRO Z = %f", msg->gyroZ);
 

@@ -1,5 +1,5 @@
 <launch>
-    <include file="$(find chefbot_3)/launch/patrick_urdf.launch"/>
+    <include file="$(find chefbot)/launch/patrick_urdf.launch"/>
  
     <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
         <!--remap from="scan" to="base_scan"/-->
@@ -40,5 +40,5 @@
 
     <node name="teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e"/>
 
-    <node pkg="rviz" name="rviz" type="rviz" args="-d $(find chefbot_3)/launch/rviz/slam.rviz"/>
+    <node pkg="rviz" name="rviz" type="rviz" args="-d $(find chefbot)/launch/rviz/slam.rviz"/>
 </launch>

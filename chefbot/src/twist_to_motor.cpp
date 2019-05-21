@@ -1,6 +1,6 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
-#include <chefbot_3/rpm_req.h>
+#include <chefbot/rpm_req.h>
 #include "robot_specs.h"
 
 int req_right = 0;
@@ -34,12 +34,12 @@ int main(int argc,char** argv)
 	ros::init(argc,argv,"twist_to_motor");
 	ros::NodeHandle nh;
 	ros::Subscriber sub = nh.subscribe("cmd_vel", 50, twistCallback);
-	ros::Publisher  right_pub = nh.advertise<chefbot_3::rpm_req>("right_rpm_req", 50);
-	ros::Publisher  left_pub = nh.advertise<chefbot_3::rpm_req>("left_rpm_req", 50);
+	ros::Publisher  right_pub = nh.advertise<chefbot::rpm_req>("right_rpm_req", 50);
+	ros::Publisher  left_pub = nh.advertise<chefbot::rpm_req>("left_rpm_req", 50);
 
 	
-	chefbot_3::rpm_req right_cmd;
-	chefbot_3::rpm_req left_cmd;
+	chefbot::rpm_req right_cmd;
+	chefbot::rpm_req left_cmd;
 	ros::Rate r(10);
 
 	while(ros::ok())

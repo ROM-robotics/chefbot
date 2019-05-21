@@ -1,5 +1,5 @@
 <launch>
-	<param name="robot_description" textfile="$(find chefbot_3)/urdf/chefbot_base.urdf" />
+	<param name="robot_description" textfile="$(find chefbot)/urdf/chefbot_base.urdf" />
 
 	<!-- The robot_state_publisher publishes the joints, otherwise your model is a pile white shapes all originating from 0, 0, 0 :) -->
   	<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">

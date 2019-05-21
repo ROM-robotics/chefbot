@@ -3,9 +3,9 @@
   <node pkg="tf" type="static_transform_publisher" name="base_to_kinect_broadcaster" args="-0.17 0.04 0.1975 0 0 0 \/base_link \/camera_link 100" />
  
   <!--we use the kinect sensor as a fake laser scanner /-->
-  <include file="$(find chefbot_3)/launch/kinect_laser.launch" />
+  <include file="$(find chefbot)/launch/kinect_laser.launch" />
 
-  <include file="$(find chefbot_3)/launch/urdf.launch" />
+  <include file="$(find chefbot)/launch/urdf.launch" />
 
   <!--serial communication between arduino and pc via usb /-->
   <node name="arduino_serial_node" pkg="rosserial_python" type="serial_node.py" output="screen">
@@ -16,7 +16,7 @@
   
   
   
-  <node name="base_controller_node" pkg="chefbot_3" type="base_controller">
+  <node name="base_controller_node" pkg="chefbot" type="base_controller">
     <param name="publish_tf" value="true" />
     <param name="publish_rate" value="10.0" />
     <param name="linear_scale_positive" value="0.99" />
@@ -48,8 +48,8 @@
 
   -->
 
-  <node name="twistToMotors" pkg="chefbot_3" type="twist_to_motors" output="screen"/>
+  <node name="twistToMotors" pkg="chefbot" type="twist_to_motors" output="screen"/>
 
-  <node name="velToImuRaw" pkg="chefbot_3" type="arduino_imu_raw" output="screen"/>
+  <node name="velToImuRaw" pkg="chefbot" type="arduino_imu_raw" output="screen"/>
   
 </launch>

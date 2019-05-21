@@ -1,10 +1,10 @@
 #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
 
 #include <ros/ros.h>
-#include <chefbot_3/rpm_req.h>
-#include <chefbot_3/rpm_act.h>
-#include <chefbot_3/rpm_pid.h>
-#include <chefbot_3/pwm.h>
+#include <chefbot/rpm_req.h>
+#include <chefbot/rpm_act.h>
+#include <chefbot/rpm_pid.h>
+#include <chefbot/pwm.h>
 #include "robot_specs.h"
 
 int request_rpm = 0;
@@ -16,12 +16,12 @@ float Kd = 0;
 
 int updatePid(int pwm_value,int request_rpm,int actual_rpm);
 
-void getReqCallback(const chefbot_3::rpm_req::ConstPtr &req)
+void getReqCallback(const chefbot::rpm_req::ConstPtr &req)
 {
 	request_rpm = (int)req->data;
 }
 
-void getActCallback(const chefbot_3::rpm_act::ConstPtr &act)
+void getActCallback(const chefbot::rpm_act::ConstPtr &act)
 {
 	actual_rpm = (int)act->data;
 }
@@ -32,9 +32,9 @@ int main(int argc,char** argv)
 	ros::NodeHandle nh;
 	ros::Subscriber req_sub = nh.subscribe("rpm_req",50,getReqCallback);
 	ros::Subscriber act_sub = nh.subscribe("act_rpm",50,getActCallback);
-	ros::Publisher pub = nh.advertise<chefbot_3::pwm>("pwm",50);
+	ros::Publisher pub = nh.advertise<chefbot::pwm>("pwm",50);
 
-	chefbot_3::rpm_pid PWM;
+	chefbot::rpm_pid PWM;
 	ros::Rate r(10);
 
 	while(ros::ok())
