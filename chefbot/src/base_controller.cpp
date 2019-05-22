@@ -41,7 +41,7 @@ int main(int argc, char** argv){
 
   ros::NodeHandle n;
   ros::NodeHandle nh_private_("~");
-  ros::Subscriber sub = n.subscribe("rpm", 50, handle_rpm);
+  ros::Subscriber sub = n.subscribe("rpm_act_msg", 50, handle_rpm);
   ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odom", 50);
   tf::TransformBroadcaster broadcaster;
   

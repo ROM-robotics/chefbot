@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(chefbot)
+project(chefbot_description)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -8,13 +8,10 @@ project(chefbot)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
-  message_generation
   roscpp
   rospy
-  sensor_msgs
   std_msgs
-  tf
+  urdf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -51,15 +48,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-   FILES
-   rpm_req.msg
-   rpm_pid.msg
-   rpm_act.msg
-   rpm.msg
-   vect4.msg
-   vect6.msg
- )
+# add_message_files(
+#   FILES
+#   Message1.msg
+#   Message2.msg
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -76,10 +69,11 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   geometry_msgs#   sensor_msgs#   std_msgs
- )
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs
+# )
+
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
 ################################################
@@ -111,9 +105,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES chefbot
-  CATKIN_DEPENDS geometry_msgs roscpp rospy sensor_msgs std_msgs tf message_runtime
-#  DEPENDS system_lib 
+#  LIBRARIES chefbot_description
+#  CATKIN_DEPENDS roscpp rospy std_msgs urdf
+#  DEPENDS system_lib
 )
 
 ###########
@@ -129,7 +123,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/chefbot.cpp
+#   src/${PROJECT_NAME}/chefbot_description.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -140,7 +134,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/chefbot_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/chefbot_description_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -197,33 +191,10 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_chefbot.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_chefbot_description.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-add_executable(base_controller src/base_controller.cpp)
-target_link_libraries(base_controller ${catkin_LIBRARIES})
-
-add_executable(forward_1meter src/forward_1m.cpp)
-target_link_libraries(forward_1meter ${catkin_LIBRARIES})
-
-add_executable(twist_to_motors src/twist_to_motors.cpp)
-target_link_libraries(twist_to_motors ${catkin_LIBRARIES})
-
-#add_executable(twist_to_motor src/twist_to_motor.cpp)
-#target_link_libraries(twist_to_motor ${catkin_LIBRARIES})
-
-#add_executable(pid_pwm src/pid.cpp)
-#target_link_libraries(pid_pwm ${catkin_LIBRARIES})
-
-add_executable(arduino_imu_raw src/vel_to_imu_raw.cpp)
-target_link_libraries(arduino_imu_raw ${catkin_LIBRARIES})
-
-add_executable(forward_backward src/forward_backward.cpp)
-target_link_libraries(forward_backward ${catkin_LIBRARIES})
-
-add_executable(square src/square_1m.cpp)
-target_link_libraries(square ${catkin_LIBRARIES})
