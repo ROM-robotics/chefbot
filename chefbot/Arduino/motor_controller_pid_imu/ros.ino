@@ -22,7 +22,7 @@ void publishRPM(unsigned long time) {
   v3_msg.vector.y = rpm_act2;
   v3_msg.vector.z = double(time)/1000; // millis to seconds
   v3_pub.publish(&v3_msg);
-  //nh.spinOnce();
+  nh.spinOnce();
 }
 
 void publishIMU()
@@ -36,5 +36,5 @@ void publishIMU()
   v.accelZ = gForceZ;
 
   imu_raw.publish(&v);
-  //nh.spinOnce();
+  nh.spinOnce();
 }
