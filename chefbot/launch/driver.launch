@@ -19,6 +19,12 @@
     <param name="angular_scale_negative" value="1.0" />
     <param name="angular_scale_accel" value="0.0" />
     <param name="alpha" value="0.5" />
+    <!--
+      if (dth > 0) dth *= angular_scale_positive;
+    if (dth < 0) dth *= angular_scale_negative;
+    if (dxy_ave > 0) dxy_ave *= linear_scale_positive;
+    if (dxy_ave < 0) dxy_ave *= linear_scale_negative;
+  -->
   </node> 
 
 

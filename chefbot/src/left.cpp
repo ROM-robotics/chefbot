@@ -8,15 +8,15 @@ int main(int argc,char** argv)
 	float linear_vel;float goal_dist;float angular_vel;float goal_angle;
 	float linear_time_duration;float angular_time_duration;
 
-	ros::init(argc,argv, "forward" );
+	ros::init(argc,argv, "right" );
 	ros::NodeHandle nh;
 	ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",100);
 
-	linear_vel = 0.2;
-	goal_dist = 1.0;
-	linear_time_duration = goal_dist / linear_vel;
+//	linear_vel = 0.2;
+//	goal_dist = 1.0;
+//	linear_time_duration = goal_dist / linear_vel;
 
-	angular_vel = 0.5; // radian
+	angular_vel = 0.2; // radian
 	goal_angle  = pi;	
 	angular_time_duration = goal_angle / angular_vel;
 
@@ -26,21 +26,6 @@ int main(int argc,char** argv)
 
 	int rate = 10;	
 	ros::Rate r(rate);
-
-	for(int i=0;i<2;i++)
-	{
-		ticks = rate * linear_time_duration;
-		cmd.linear.x = linear_vel;
-		cmd.angular.z= 0;
-		for(int j=0;j<ticks;j++)
-		{
-			pub.publish(cmd);
-			r.sleep();
-		}
-		cmd.linear.x = 0.0;
-		cmd.angular.z= 0.0;
-		pub.publish(cmd);
-		ros::Duration(1).sleep();
 
 		ticks = rate * angular_time_duration;
 		cmd.linear.x = 0.0;
@@ -55,7 +40,7 @@ int main(int argc,char** argv)
 		cmd.angular.z= 0.0;
 		pub.publish(cmd);
 		ros::Duration(1).sleep();
-	}
+
 
 
 	

@@ -1,3 +1,8 @@
+/** author: Sung Jik Cha
+ ** credits : ros turtlebot node : https://github.com/Arkapravo/turtlebot
+              arduino ros bridge : http://wiki.ros.org/ros_arduino_bridge
+**/
+
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/Odometry.h>
@@ -6,6 +11,7 @@
 #include <cmath>
 #include <algorithm>
 #include "robot_specs.h"
+
 
 double rpm_act1 = 0.0;
 double rpm_act2 = 0.0;
@@ -22,8 +28,7 @@ ros::Time current_time;
 ros::Time rpm_time(0.0);
 ros::Time last_time(0.0);
 
-
-void handle_rpm( const geometry_msgs::Vector3Stamped& rpm) {  
+void handle_rpm( const geometry_msgs::Vector3Stamped& rpm) {
   rpm_act1 = rpm.vector.x;
   rpm_act2 = rpm.vector.y;
   rpm_dt = rpm.vector.z;
@@ -85,29 +90,19 @@ int main(int argc, char** argv){
     // ros::topic::waitForMessage<geometry_msgs::Vector3Stamped>("rpm", n, d);
     current_time = ros::Time::now();
     dt = rpm_dt;
-    // average_rpm = (rpm_act1+rpm_act2) / 2;
-    // rpm to wheel velocity
-    // (X rev/1 min) x (1 min/60s) x (pi*d/1 rev)
-    //  velocity to distance
-    //  dxy_ave = v * dt
-
     dxy_ave = (rpm_act1+rpm_act2)*dt*wheel_diameter*pi/(60*2);
-    //dth_odom = (rpm_act1-rpm_act2)/track_width;
-    //dth_odom = dth_odom*dt*wheel_diameter*pi/60;
-    // s=r * theta , theta = s/r , theta is always radian
-    dth_odom = (rpm_act1-rpm_act2)*dt*wheel_diameter*pi/(60*track_width);
+    dth_odom = (rpm_act2-rpm_act1)*dt*wheel_diameter*pi/(60*track_width);
 
     // if (use_imu) dth_gyro = dt*gyro_z;
-    //dth = alpha*dth_odom + (1-alpha)*dth_gyro;
-    dth = alpha*dth_odom;
+    // dth = alpha*dth_odom + (1-alpha)*dth_gyro;
 
     if (dth > 0) dth *= angular_scale_positive;
     if (dth < 0) dth *= angular_scale_negative;
     if (dxy_ave > 0) dxy_ave *= linear_scale_positive;
-    if (dxy_ave < 0) dxy_ave *= linear_scale_negative;
-//-----------------------------------------------------------------//
+    if (dxy_ave > 0) dxy_ave *= linear_scale_negative;
+
     dx = cos(dth) * dxy_ave;
-    dy = -sin(dth) * dxy_ave; // Why minus?
+    dy = -sin(dth) * dxy_ave;
 
     x_pos += (cos(theta) * dx - sin(theta) * dy);
     y_pos += (sin(theta) * dx + cos(theta) * dy);

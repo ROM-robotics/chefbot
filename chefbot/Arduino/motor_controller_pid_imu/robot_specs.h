@@ -4,7 +4,7 @@
 #define encoder_pulse   11
 #define gear_ratio      30
 #define wheel_diameter  0.069   // meter
-#define track_width     0.276   // meter ////edit
+#define track_width     0.244   // meter ////edit
 #define MAX_RPM         320 /// edit
 #define pi              3.1415926
 #define two_pi          6.2831853
