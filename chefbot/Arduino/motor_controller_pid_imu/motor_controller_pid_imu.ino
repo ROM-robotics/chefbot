@@ -44,7 +44,7 @@ ros::Publisher imu_raw("imu_raw", &v);
 #define right_encoderB      3     // (interrupt numbers 1)
 #define left_encoderA      18     // (interrupt numbers 5)
 #define left_encoderB      19     // (interrupt numbers 4)
-#define LOOPTIME        100       // PID loop time(ms)
+
 #define SMOOTH      10
 
 #define sign(x) (x > 0) - (x < 0) // if x>0 --> 1 , if x<0 --> -1, if x=0 --> 0
@@ -54,6 +54,8 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // Select which 'port' M1, M2, M3 or M4. 
 Adafruit_DCMotor *motor_right = AFMS.getMotor(1); // 1 --> right, 2 --> left
 Adafruit_DCMotor *motor_left = AFMS.getMotor(2);
+
+int LOOPTIME = 100;       // PID loop time(ms)
 
 unsigned long lastMilli = 0;       // loop timing 
 unsigned long lastMilliPub = 0;

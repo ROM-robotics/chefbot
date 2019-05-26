@@ -1,55 +1,17 @@
 <launch>
+  <arg name="twist_to_motors" value="0"/> 
+  <arg name="teleop_keyboard" value="0"/>
 
   <include file="$(find chefbot)/launch/urdf.launch" />
 
-  <!--serial communication between arduino and pc via usb /-->
-  <node name="arduino_serial_node" pkg="rosserial_python" type="serial_node.py" output="screen">
-    <param name="port" value="/dev/ttyACM0" />
-    <param name="baud" value="57600" />
-  </node>
-
+  <include file="$(find chefbot)/launch/serial.launch" />  
   
+  <group if="$(eval teleop_keyboard == 1)">
+    <node name="teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e"/>
+  </group>
   
-  
-  <node name="base_controller_node" pkg="chefbot" type="base_controller">
-    <param name="publish_rate" value="10.0" />
-    <param name="linear_scale_positive" value="0.99" />
-    <param name="linear_scale_negative" value="0.99" />
-    <param name="angular_scale_positive" value="1.0" />
-    <param name="angular_scale_negative" value="1.0" />
-    <param name="angular_scale_accel" value="0.0" />
-    <param name="alpha" value="0.5" />
-    <!--
-      if (dth > 0) dth *= angular_scale_positive;
-    if (dth < 0) dth *= angular_scale_negative;
-    if (dxy_ave > 0) dxy_ave *= linear_scale_positive;
-    if (dxy_ave < 0) dxy_ave *= linear_scale_negative;
-  -->
-  </node> 
-
-
-  
-  
-  <!--node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
-    <remap from="imu" to="imu_data"/>
-    <param name="output_frame" value="/odom"/>
-    <param name="freq" value="10.0"/>
-    <param name="sensor_timeout" value="1.0"/>
-    <param name="odom_used" value="true"/>
-    <param name="imu_used" value="true"/>
-    <param name="vo_used" value="false"/>
-    <param name="debug" value="false"/>
-    <param name="self_diagnose" value="false"/>
-    <param name="base_footprint_frame" value="/base_link"/>
-  </node-->
-
-  <!--node name="teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e"/>
-
-  -->
-  
-  <node name="twistToMotors" pkg="chefbot" type="twist_to_motors" output="screen"/>
-
-  <node name="velToImuRaw" pkg="chefbot" type="arduino_imu_raw" output="screen"/>
-
+  <group if="$(eval twist_to_motors == 1)">
+    <include file="$(find chefbot)/launch/twist.launch" />
+  </group>
   
 </launch>

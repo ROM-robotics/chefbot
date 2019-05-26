@@ -36,6 +36,18 @@ int main(int argc,char** argv)
 	ros::Subscriber sub = nh.subscribe("cmd_vel", 50, twistCallback);
 	ros::Publisher  pub = nh.advertise<chefbot::rpm>("rpm_req_msg", 50);
 
+
+	// bool status = ros::param::has("love");
+	// while(!status)
+	// {
+	// 	// This is blocking function for waiting arduino_node.py (Written by ko su san)
+	// 	ROS_INFO_STREAM("Set paremtert : name=love value=yes");
+	// 	ROS_INFO_STREAM(";P");
+	// 	ROS_INFO_STREAM(";P");
+
+	// 	status = ros::param::has("love");
+	// }
+
 	
 	chefbot::rpm RPM;
 	ros::Rate r(10);
