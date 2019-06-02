@@ -1,0 +1,7 @@
+<launch>
+<!-- Run the EKF Localizatin Node -->
+<node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_node">
+	<rosparam command="load" file="$(find chefbot_localization)/config/ekf_template.yaml"/>
+</node>
+
+</launch>

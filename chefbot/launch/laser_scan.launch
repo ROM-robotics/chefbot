@@ -1,7 +1,0 @@
-<launch>
-  <include file="$(find chefbot)/launch/urdf.launch"/>
-
-  <node name="teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e"/>
-
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find chefbot)/launch/rviz/laser.rviz"/>
-</launch>
