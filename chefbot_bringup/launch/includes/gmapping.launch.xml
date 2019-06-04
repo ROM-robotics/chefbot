@@ -1,5 +1,5 @@
 <launch>
-    <arg name="odom_topic" default="odom"/>
+    <arg name="odom_topic" default="odom/filtered"/>
 <!-- http://wiki.ros.org/gmapping -->
   <arg name="scan_topic" default="scan" />
 
