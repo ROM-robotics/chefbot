@@ -1,5 +1,5 @@
 <launch>
-  <arg name="odom_topic"     default="odom/filtered"/>
+  <arg name="odom_topic"     default="odometry/filtered"/>
 
   <arg name="use_map_topic"  default="true"/>
   <arg name="scan_topic"     default="scan"/>
