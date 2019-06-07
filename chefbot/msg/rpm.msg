@@ -1,2 +1,0 @@
-int32 req_right
-int32 req_left

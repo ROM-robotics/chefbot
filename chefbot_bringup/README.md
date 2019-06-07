@@ -1,1 +1,0 @@
-1) if you use gmapping don't use amcl ( cause of duplicate move base pkgs)

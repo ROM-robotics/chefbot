@@ -1,5 +1,0 @@
-time epoch
----
-string[] edge_ids
-float64[] probs
-duration[] durations
