@@ -1,0 +1,4 @@
+<launch>
+	<!--include file="$(find chefbot_slam)/launch/start_driver.launch"/-->
+	<include file="$(find chefbot_slam)/launch/amcl_demo.launch"/>
+</launch>

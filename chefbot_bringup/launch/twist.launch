@@ -1,0 +1,25 @@
+<launch>
+
+
+	<node name="twistToMotors" pkg="chefbot_bringup" type="twist_to_motors" output="screen">
+    <remap from="cmd_vel" to="cmd_navigation"/>
+  </node>
+
+  <node name="base_controller_node" pkg="chefbot_bringup" type="base_controller_quat">
+      <param name="publish_rate" value="10.0" />
+      <param name="linear_scale_positive" value="0.99" />
+      <param name="linear_scale_negative" value="0.99" />
+      <param name="angular_scale_positive" value="1.0" />
+      <param name="angular_scale_negative" value="1.0" />
+      <param name="angular_scale_accel" value="0.0" />
+      <param name="alpha" value="0.5" />
+    <!--
+      if (dth > 0) dth *= angular_scale_positive;
+    if (dth < 0) dth *= angular_scale_negative;
+    if (dxy_ave > 0) dxy_ave *= linear_scale_positive;
+    if (dxy_ave < 0) dxy_ave *= linear_scale_negative;
+  -->
+  </node>
+
+
+</launch>

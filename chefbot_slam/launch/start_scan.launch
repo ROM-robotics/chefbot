@@ -1,0 +1,6 @@
+<launch>
+	<!--include file="$(find astra_launch)/launch/astra.launch"/-->
+	<!--include file="$(find chefbot_slam)/launch/start_driver.launch"/-->
+	<include file="$(find chefbot_slam)/launch/gmapping_demo.launch"/>
+	<include file="$(find chefbot_slam)/launch/keyboard_teleop.launch"/>
+</launch>
