@@ -83,6 +83,7 @@ class Arduino_Class(object):
 		self.imu.linear_acceleration_covariance[8] = 0;
 
 		self.vector3 = Vector3Stamped()
+		self.vector3_rpy = Vector3Stamped()
 #######################################################################################################################
 		#Get serial port and baud rate of Tiva C Arduino
 		port = rospy.get_param("~port", "/dev/ttyACM0")
@@ -101,7 +102,7 @@ class Arduino_Class(object):
 		self._Req_subscriber = rospy.Subscriber('rpm_req_msg',rpm,self._Handle_rpm_request)
 
 		self._Act_publisher = rospy.Publisher('rpm_act_msg',Vector3Stamped,queue_size = 50)
-		self._Imu_publisher = rospy.Publisher('imu/data',Imu,queue_size=50)
+		self._Imu_publisher = rospy.Publisher('imu/data',Vector3Stamped,queue_size=50)
 		self._SerialPublisher = rospy.Publisher('serial', String,queue_size=50)
 
 
@@ -147,17 +148,16 @@ class Arduino_Class(object):
 					self._Act_publisher.publish(self.vector3)
 
 				if(li[0] == '6'):
-					qx = float(li[1])
-					qy = float(li[2])
-					qz = float(li[3])
-					qw = float(li[4])
+					roll = float(li[1])
+					pitch = float(li[2])
+					yaw = float(li[3])
 					#rospy.loginfo("oK i got imu")
 
-					self.imu.orientation.x = qx;
-					self.imu.orientation.y = qy;
-					self.imu.orientation.z = qz;
-					self.imu.orientation.w = qw;
-					self._Imu_publisher.publish(self.imu)
+					self.vector3_rpy.header.stamp = ros_time
+					self.vector3_rpy.vector.x = roll
+					self.vector3_rpy.vector.y = pitch
+					self.vector3_rpy.vector.z = yaw
+					self._Imu_publisher.publish(self.vector3_rpy)
 
 			except:
 				#rospy.logwarn("Error in Sensor values")

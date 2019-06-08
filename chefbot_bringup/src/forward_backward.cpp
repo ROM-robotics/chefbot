@@ -10,21 +10,21 @@ int main(int argc,char** argv)
 
 	ros::init(argc,argv, "forward" );
 	ros::NodeHandle nh;
-	ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",100);
+	ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("cmd_navigation",100);
 
 	linear_vel = 0.2;
 	goal_dist = 1.0;
 	linear_time_duration = goal_dist / linear_vel;
 
-	angular_vel = 0.5; // radian
-	goal_angle  = pi;	
+	angular_vel = 0.2; // radian
+	goal_angle  = pi;
 	angular_time_duration = goal_angle / angular_vel;
 
 	int ticks;
 
 	geometry_msgs::Twist cmd;
 
-	int rate = 10;	
+	int rate = 10;
 	ros::Rate r(rate);
 
 	for(int i=0;i<2;i++)
@@ -58,12 +58,12 @@ int main(int argc,char** argv)
 	}
 
 
-	
 
-	
-	
 
-	
+
+
+
+
 	ros::shutdown();
 
 	return 0;

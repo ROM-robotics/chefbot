@@ -16,7 +16,7 @@ int main(int argc,char** argv)
 	}
 	ros::init(argc,argv, "forward" );
 	ros::NodeHandle nh;
-	ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",100);
+	ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("cmd_navigation",100);
 
 	int rate = 10;
 

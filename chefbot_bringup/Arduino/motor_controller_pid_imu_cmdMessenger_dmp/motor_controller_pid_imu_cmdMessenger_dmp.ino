@@ -41,6 +41,8 @@ uint16_t fifoCount;     // count of all bytes currently in FIFO
 uint8_t fifoBuffer[64]; // FIFO storage buffer
 
 Quaternion q;
+float ypr[3];           // [yaw, pitch, roll]
+VectorFloat gravity;    // [x, y, z]
 volatile bool mpuInterrupt = false;
 //--------------------new-------------------/
 int end_bit = 0;

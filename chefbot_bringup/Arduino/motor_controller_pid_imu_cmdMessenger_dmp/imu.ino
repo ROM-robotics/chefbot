@@ -69,8 +69,8 @@ void updateIMU() {
         
             // display quaternion values in easy matrix form: w x y z
             mpu.dmpGetQuaternion(&q, fifoBuffer);
-            //mpu.dmpGetGravity(&gravity, &q);
-            //mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+            mpu.dmpGetGravity(&gravity, &q);
+            mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
 
             //Assigning YAW,PITCH,ROLL to vector message and publishing the values
             

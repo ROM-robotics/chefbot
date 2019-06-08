@@ -23,7 +23,7 @@ ros::Time rpm_time(0.0);
 ros::Time last_time(0.0);
 
 
-void handle_rpm( const geometry_msgs::Vector3Stamped& rpm) {  
+void handle_rpm( const geometry_msgs::Vector3Stamped& rpm) {
   rpm_act1 = rpm.vector.x;
   rpm_act2 = rpm.vector.y;
   rpm_dt = rpm.vector.z;
@@ -39,7 +39,7 @@ int main(int argc, char** argv){
   ros::Subscriber sub = n.subscribe("rpm_act_msg", 50, handle_rpm);
   ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("encoder_odom", 50);
   tf::TransformBroadcaster broadcaster;
-  
+
   double rate = 10.0;
   double linear_scale_positive = 1.0;
   double linear_scale_negative = 1.0;
@@ -58,7 +58,7 @@ int main(int argc, char** argv){
   double dy = 0.0;
 
   double dth_odom = 0.0;
-  
+
   double dth = 0.0;
   double dth_prev = 0.0;
   double dth_curr = 0.0;
@@ -118,7 +118,7 @@ int main(int argc, char** argv){
 
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
 
-    
+
       geometry_msgs::TransformStamped t;
       t.header.frame_id = odom;
       t.child_frame_id = base_link;
@@ -129,7 +129,7 @@ int main(int argc, char** argv){
       t.header.stamp = current_time;
 
       broadcaster.sendTransform(t);
-    
+
 
     nav_msgs::Odometry odom_msg;
     odom_msg.header.stamp = current_time;
@@ -185,7 +185,7 @@ int main(int argc, char** argv){
   }
 }
 /*
-msg.pose.covariance = {cov_x, 0, 0, 0, 0, 0, 
+msg.pose.covariance = {cov_x, 0, 0, 0, 0, 0,
                         0, cov_y, 0, 0, 0, 0,
                         0, 0, 99999, 0, 0, 0,
                         0, 0, 0, 99999, 0, 0,

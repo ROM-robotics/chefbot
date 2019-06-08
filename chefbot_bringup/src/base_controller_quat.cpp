@@ -7,6 +7,8 @@
 #include <cmath>
 #include <algorithm>
 #include "robot_specs.h"
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 double rpm_act1 = 0.0;
 double rpm_act2 = 0.0;
@@ -19,7 +21,9 @@ double rpm_dt = 0.0;
 double x_pos = 0.0;
 double y_pos = 0.0;
 double theta = 0.0;
-float qx = 0.0;float qy = 0.0;float qz = 0.0;float qw = 0.0;
+float roll = 0.0;
+float pitch= 0.0;
+float yaw = 0.0;
 
 ros::Time current_time;
 ros::Time rpm_time(0.0);
@@ -32,11 +36,10 @@ void handle_rpm( const geometry_msgs::Vector3Stamped& rpm) {
   rpm_dt = rpm.vector.z;
   rpm_time = rpm.header.stamp;
 }
-void handle_quat( const sensor_msgs::Imu& imu) {
-  qx = imu.orientation.x;
-  qy = imu.orientation.y;
-  qz = imu.orientation.z;
-  qw = imu.orientation.w;
+void handle_quat( const geometry_msgs::Vector3Stamped& imu) {
+  roll = imu.vector.x;
+  pitch= imu.vector.y;
+  yaw  = imu.vector.z;
 }
 
 int main(int argc, char** argv){
@@ -126,8 +129,13 @@ int main(int argc, char** argv){
     if(theta <= -two_pi) theta += two_pi;
 
     //geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
-    geometry_msgs::Quaternion imu_quat;
-    imu_quat.x = qx;imu_quat.y=qy;imu_quat.z=qz;imu_quat.w=qw;
+    //geometry_msgs::Quaternion imu_quat;
+    tf2::Quaternion imu_quat;
+    imu_quat.setRPY(0.0,0.0,yaw);
+    imu_quat.normalize();
+
+    geometry_msgs::Quaternion q_rotation;
+    q_rotation = tf2::toMsg(imu_quat);
 
       geometry_msgs::TransformStamped t;
       t.header.frame_id = odom;
@@ -135,7 +143,7 @@ int main(int argc, char** argv){
       t.transform.translation.x = x_pos;
       t.transform.translation.y = y_pos;
       t.transform.translation.z = 0.0;
-      t.transform.rotation = imu_quat;
+      t.transform.rotation = q_rotation;
       t.header.stamp = current_time;
 
       broadcaster.sendTransform(t);
@@ -147,7 +155,7 @@ int main(int argc, char** argv){
     odom_msg.pose.pose.position.x = x_pos;
     odom_msg.pose.pose.position.y = y_pos;
     odom_msg.pose.pose.position.z = 0.0;
-    odom_msg.pose.pose.orientation = imu_quat;
+    odom_msg.pose.pose.orientation = q_rotation;
 
 
     if (rpm_act1 == 0 && rpm_act2 == 0){
