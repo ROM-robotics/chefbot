@@ -1,11 +1,17 @@
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
+#include <sensor_msgs/Imu.h>
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Vector3.h>
 #include <stdio.h>
 #include <cmath>
 #include <algorithm>
 #include "robot_specs.h"
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
+bool publish_tf = false;
+bool use_imu = false;
 
 double rpm_act1 = 0.0;
 double rpm_act2 = 0.0;
@@ -18,6 +24,10 @@ double rpm_dt = 0.0;
 double x_pos = 0.0;
 double y_pos = 0.0;
 double theta = 0.0;
+//float roll = 0.0;
+//float pitch= 0.0;
+//float yaw = 0.0;
+
 ros::Time current_time;
 ros::Time rpm_time(0.0);
 ros::Time last_time(0.0);
@@ -29,7 +39,12 @@ void handle_rpm( const geometry_msgs::Vector3Stamped& rpm) {
   rpm_dt = rpm.vector.z;
   rpm_time = rpm.header.stamp;
 }
-
+void handle_quat( const geometry_msgs::Vector3Stamped& imu) {
+  //roll = imu.vector.x;
+  //pitch= imu.vector.y;
+  //yaw  = imu.vector.z;
+  gyro_z = imu.vector.z;
+}
 
 int main(int argc, char** argv){
   ros::init(argc, argv, "base_controller");
@@ -37,7 +52,8 @@ int main(int argc, char** argv){
   ros::NodeHandle n;
   ros::NodeHandle nh_private_("~");
   ros::Subscriber sub = n.subscribe("rpm_act_msg", 50, handle_rpm);
-  ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("encoder_odom", 50);
+  ros::Subscriber imu_sub = n.subscribe("gyro", 50, handle_quat);
+  ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odom", 50);
   tf::TransformBroadcaster broadcaster;
 
   double rate = 10.0;
@@ -58,8 +74,9 @@ int main(int argc, char** argv){
   double dy = 0.0;
 
   double dth_odom = 0.0;
-
+  double dth_gyro = 0.0;
   double dth = 0.0;
+
   double dth_prev = 0.0;
   double dth_curr = 0.0;
   double dxy_prev = 0.0;
@@ -72,12 +89,14 @@ int main(int argc, char** argv){
   char odom[] = "/odom";
   ros::Duration d(1.0);
   nh_private_.getParam("publish_rate", rate);
+  nh_private_.getParam("publish_tf", publish_tf);
   nh_private_.getParam("linear_scale_positive", linear_scale_positive);
   nh_private_.getParam("linear_scale_negative", linear_scale_negative);
   nh_private_.getParam("angular_scale_positive", angular_scale_positive);
   nh_private_.getParam("angular_scale_negative", angular_scale_negative);
   nh_private_.getParam("angular_scale_accel", angular_scale_accel);
   nh_private_.getParam("alpha", alpha);
+  nh_private_.getParam("use_imu", use_imu);
 
   ros::Rate r(rate);
   while(n.ok()){
@@ -97,8 +116,8 @@ int main(int argc, char** argv){
     // s=r * theta , theta = s/r , theta is always radian
     dth_odom = (rpm_act1-rpm_act2)*dt*wheel_diameter*pi/(60*track_width);
 
-    // if (use_imu) dth_gyro = dt*gyro_z;
-    //dth = alpha*dth_odom + (1-alpha)*dth_gyro;
+    if (use_imu) dth_gyro = dt*gyro_z;
+    dth = alpha*dth_odom + (1-alpha)*dth_gyro;
     dth = alpha*dth_odom;
 
     if (dth > 0) dth *= angular_scale_positive;
@@ -118,7 +137,7 @@ int main(int argc, char** argv){
 
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
 
-
+    if(publish_tf) {
       geometry_msgs::TransformStamped t;
       t.header.frame_id = odom;
       t.child_frame_id = base_link;
@@ -129,7 +148,7 @@ int main(int argc, char** argv){
       t.header.stamp = current_time;
 
       broadcaster.sendTransform(t);
-
+    }
 
     nav_msgs::Odometry odom_msg;
     odom_msg.header.stamp = current_time;

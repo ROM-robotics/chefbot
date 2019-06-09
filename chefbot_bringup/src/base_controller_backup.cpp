@@ -1,14 +1,17 @@
+/** author: Sung Jik Cha
+ ** credits : ros turtlebot node : https://github.com/Arkapravo/turtlebot
+              arduino ros bridge : http://wiki.ros.org/ros_arduino_bridge
+**/
+
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
-#include <sensor_msgs/Imu.h>
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Vector3.h>
 #include <stdio.h>
 #include <cmath>
 #include <algorithm>
-#include "robot_specs.h"
-#include <tf2/LinearMath/Quaternion.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <robot_specs.h>
+
 
 double rpm_act1 = 0.0;
 double rpm_act2 = 0.0;
@@ -21,14 +24,9 @@ double rpm_dt = 0.0;
 double x_pos = 0.0;
 double y_pos = 0.0;
 double theta = 0.0;
-float roll = 0.0;
-float pitch= 0.0;
-float yaw = 0.0;
-
 ros::Time current_time;
 ros::Time rpm_time(0.0);
 ros::Time last_time(0.0);
-
 
 void handle_rpm( const geometry_msgs::Vector3Stamped& rpm) {
   rpm_act1 = rpm.vector.x;
@@ -36,10 +34,11 @@ void handle_rpm( const geometry_msgs::Vector3Stamped& rpm) {
   rpm_dt = rpm.vector.z;
   rpm_time = rpm.header.stamp;
 }
-void handle_quat( const geometry_msgs::Vector3Stamped& imu) {
-  roll = imu.vector.x;
-  pitch= imu.vector.y;
-  yaw  = imu.vector.z;
+
+void handle_gyro( const geometry_msgs::Vector3& gyro) {
+  gyro_x = gyro.x;
+  gyro_y = gyro.y;
+  gyro_z = gyro.z;
 }
 
 int main(int argc, char** argv){
@@ -47,8 +46,8 @@ int main(int argc, char** argv){
 
   ros::NodeHandle n;
   ros::NodeHandle nh_private_("~");
-  ros::Subscriber sub = n.subscribe("rpm_act_msg", 50, handle_rpm);
-  ros::Subscriber imu_sub = n.subscribe("imu/data", 50, handle_quat);
+  ros::Subscriber sub = n.subscribe("rpm", 50, handle_rpm);
+  ros::Subscriber gyro_sub = n.subscribe("gyro", 50, handle_gyro);
   ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odom", 50);
   tf::TransformBroadcaster broadcaster;
 
@@ -58,19 +57,18 @@ int main(int argc, char** argv){
   double angular_scale_positive = 1.0;
   double angular_scale_negative = 1.0;
   double angular_scale_accel = 1.0;
-
   double acc_theta = 0.0;
   double acc_x = 0.0;
   double acc_max_theta = 0.0;
   double acc_max_x = 0.0;
   double alpha = 0.0;
-
+  bool publish_tf = true;
+  bool use_imu = false;
   double dt = 0.0;
   double dx = 0.0;
   double dy = 0.0;
-
   double dth_odom = 0.0;
-
+  double dth_gyro = 0.0;
   double dth = 0.0;
   double dth_prev = 0.0;
   double dth_curr = 0.0;
@@ -79,17 +77,18 @@ int main(int argc, char** argv){
   double vx = 0.0;
   double vy = 0.0;
   double vth = 0.0;
-
-  char base_link[] = "base_link";
+  char base_link[] = "/base_link";
   char odom[] = "/odom";
   ros::Duration d(1.0);
   nh_private_.getParam("publish_rate", rate);
+  nh_private_.getParam("publish_tf", publish_tf);
   nh_private_.getParam("linear_scale_positive", linear_scale_positive);
   nh_private_.getParam("linear_scale_negative", linear_scale_negative);
   nh_private_.getParam("angular_scale_positive", angular_scale_positive);
   nh_private_.getParam("angular_scale_negative", angular_scale_negative);
   nh_private_.getParam("angular_scale_accel", angular_scale_accel);
   nh_private_.getParam("alpha", alpha);
+  nh_private_.getParam("use_imu", use_imu);
 
   ros::Rate r(rate);
   while(n.ok()){
@@ -97,29 +96,19 @@ int main(int argc, char** argv){
     // ros::topic::waitForMessage<geometry_msgs::Vector3Stamped>("rpm", n, d);
     current_time = ros::Time::now();
     dt = rpm_dt;
-    // average_rpm = (rpm_act1+rpm_act2) / 2;
-    // rpm to wheel velocity
-    // (X rev/1 min) x (1 min/60s) x (pi*d/1 rev)
-    //  velocity to distance
-    //  dxy_ave = v * dt
-
     dxy_ave = (rpm_act1+rpm_act2)*dt*wheel_diameter*pi/(60*2);
-    //dth_odom = (rpm_act1-rpm_act2)/track_width;
-    //dth_odom = dth_odom*dt*wheel_diameter*pi/60;
-    // s=r * theta , theta = s/r , theta is always radian
-    dth_odom = (rpm_act1-rpm_act2)*dt*wheel_diameter*pi/(60*track_width);
+    dth_odom = (rpm_act2-rpm_act1)*dt*wheel_diameter*pi/(60*track_width);
 
-    // if (use_imu) dth_gyro = dt*gyro_z;
-    //dth = alpha*dth_odom + (1-alpha)*dth_gyro;
-    dth = alpha*dth_odom;
+    if (use_imu) dth_gyro = dt*gyro_z;
+    dth = alpha*dth_odom + (1-alpha)*dth_gyro;
 
     if (dth > 0) dth *= angular_scale_positive;
     if (dth < 0) dth *= angular_scale_negative;
     if (dxy_ave > 0) dxy_ave *= linear_scale_positive;
-    if (dxy_ave < 0) dxy_ave *= linear_scale_negative;
-//-----------------------------------------------------------------//
+    if (dxy_ave > 0) dxy_ave *= linear_scale_negative;
+
     dx = cos(dth) * dxy_ave;
-    dy = -sin(dth) * dxy_ave; // Why minus?
+    dy = -sin(dth) * dxy_ave;
 
     x_pos += (cos(theta) * dx - sin(theta) * dy);
     y_pos += (sin(theta) * dx + cos(theta) * dy);
@@ -128,26 +117,20 @@ int main(int argc, char** argv){
     if(theta >= two_pi) theta -= two_pi;
     if(theta <= -two_pi) theta += two_pi;
 
-    //geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
-    //geometry_msgs::Quaternion imu_quat;
-    tf2::Quaternion imu_quat;
-    imu_quat.setRPY(0.0,0.0,yaw);
-    imu_quat.normalize();
+    geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
 
-    geometry_msgs::Quaternion q_rotation;
-    q_rotation = tf2::toMsg(imu_quat);
-
+    if(publish_tf) {
       geometry_msgs::TransformStamped t;
       t.header.frame_id = odom;
       t.child_frame_id = base_link;
       t.transform.translation.x = x_pos;
       t.transform.translation.y = y_pos;
       t.transform.translation.z = 0.0;
-      t.transform.rotation = q_rotation;
+      t.transform.rotation = odom_quat;
       t.header.stamp = current_time;
 
       broadcaster.sendTransform(t);
-
+    }
 
     nav_msgs::Odometry odom_msg;
     odom_msg.header.stamp = current_time;
@@ -155,9 +138,7 @@ int main(int argc, char** argv){
     odom_msg.pose.pose.position.x = x_pos;
     odom_msg.pose.pose.position.y = y_pos;
     odom_msg.pose.pose.position.z = 0.0;
-    odom_msg.pose.pose.orientation = q_rotation;
-
-
+    odom_msg.pose.pose.orientation = odom_quat;
     if (rpm_act1 == 0 && rpm_act2 == 0){
       odom_msg.pose.covariance[0] = 1e-9;
       odom_msg.pose.covariance[7] = 1e-3;
@@ -202,12 +183,3 @@ int main(int argc, char** argv){
     r.sleep();
   }
 }
-/*
-msg.pose.covariance = {cov_x, 0, 0, 0, 0, 0,
-                        0, cov_y, 0, 0, 0, 0,
-                        0, 0, 99999, 0, 0, 0,
-                        0, 0, 0, 99999, 0, 0,
-                        0, 0, 0, 0, 99999, 0,
-                        0, 0, 0, 0, 0, rcov_z}
-
-*/

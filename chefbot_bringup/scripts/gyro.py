@@ -10,7 +10,7 @@ from geometry_msgs.msg import Vector3
 from math import sqrt,atan2,cos,sin,pi
 
 def imu_publisher(sock):
-    host="192.168.1.200"
+    host="192.168.1.100"
     port=5555
     theta = 0
     gyro_x_offset = 0.0
@@ -23,7 +23,7 @@ def imu_publisher(sock):
     debug = False
 
     gyro_pub = rospy.Publisher('gyro', Vector3, queue_size=50)
-    imu_pub = rospy.Publisher('imu', Imu, queue_size=50)
+    imu_pub = rospy.Publisher('android_imu', Imu, queue_size=50)
     rospy.init_node('imu_publisher', anonymous=True)
     rate = rospy.Rate(pub_freq)
     if rospy.has_param('~num_callibration_itrs'):
@@ -96,7 +96,7 @@ def imu_publisher(sock):
         else:
             rospy.loginfo("received incomplete UDP packet from android IMU")
             continue
-             
+
 
 if __name__ == '__main__':
     try:

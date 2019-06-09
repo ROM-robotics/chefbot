@@ -102,7 +102,7 @@ class Arduino_Class(object):
 		self._Req_subscriber = rospy.Subscriber('rpm_req_msg',rpm,self._Handle_rpm_request)
 
 		self._Act_publisher = rospy.Publisher('rpm_act_msg',Vector3Stamped,queue_size = 50)
-		self._Imu_publisher = rospy.Publisher('imu/data',Vector3Stamped,queue_size=50)
+		self._Imu_publisher = rospy.Publisher('imu/rpy',Vector3Stamped,queue_size=50)
 		self._SerialPublisher = rospy.Publisher('serial', String,queue_size=50)
 
 

@@ -214,14 +214,8 @@ target_link_libraries(forward_1meter ${catkin_LIBRARIES})
 add_executable(twist_to_motors src/twist_to_motors.cpp)
 target_link_libraries(twist_to_motors ${catkin_LIBRARIES})
 
-add_executable(arduino_imu_raw src/vel_to_imu_raw.cpp)
-target_link_libraries(arduino_imu_raw ${catkin_LIBRARIES})
+#add_executable(arduino_imu_raw src/vel_to_imu_raw.cpp)
+#target_link_libraries(arduino_imu_raw ${catkin_LIBRARIES})
 
 add_executable(forward_backward src/forward_backward.cpp)
 target_link_libraries(forward_backward ${catkin_LIBRARIES})
-
-add_executable(square src/square_1m.cpp)
-target_link_libraries(square ${catkin_LIBRARIES})
-
-add_executable(base_controller_quat src/base_controller_quat.cpp)
-target_link_libraries(base_controller_quat ${catkin_LIBRARIES})
