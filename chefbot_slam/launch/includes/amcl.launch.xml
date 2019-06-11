@@ -1,5 +1,6 @@
 <launch>
   <arg name="odom_topic"     default="odom"/>
+  <arg name="tf_broadcast" default="false"/>
 
   <arg name="use_map_topic"  default="true"/>
   <arg name="scan_topic"     default="scan"/>
@@ -8,6 +9,8 @@
   <arg name="initial_pose_a" default="0.0"/>
 
   <node pkg="amcl" type="amcl" name="amcl">
+    <param name="tf_broadcast" value="$(arg tf_broadcast)"/>
+
     <param name="use_map_topic"             value="$(arg use_map_topic)"/>
     <!-- Publish scans from best pose at a max of 10 Hz -->
     <param name="odom_model_type"           value="diff"/>

@@ -22,7 +22,7 @@ def imu_publisher(sock):
     num_callibration_itrs = 60
     debug = False
 
-    gyro_pub = rospy.Publisher('gyro', Vector3, queue_size=50)
+    gyro_pub = rospy.Publisher('android_gyro', Vector3, queue_size=50)
     imu_pub = rospy.Publisher('android_imu', Imu, queue_size=50)
     rospy.init_node('imu_publisher', anonymous=True)
     rate = rospy.Rate(pub_freq)

@@ -39,11 +39,11 @@ void handle_rpm( const geometry_msgs::Vector3Stamped& rpm) {
   rpm_dt = rpm.vector.z;
   rpm_time = rpm.header.stamp;
 }
-void handle_quat( const geometry_msgs::Vector3Stamped& imu) {
+void handle_quat( const geometry_msgs::Vector3 gyro) {
   //roll = imu.vector.x;
   //pitch= imu.vector.y;
   //yaw  = imu.vector.z;
-  gyro_z = imu.vector.z;
+  gyro_z = gyro.z;
 }
 
 int main(int argc, char** argv){
@@ -52,7 +52,7 @@ int main(int argc, char** argv){
   ros::NodeHandle n;
   ros::NodeHandle nh_private_("~");
   ros::Subscriber sub = n.subscribe("rpm_act_msg", 50, handle_rpm);
-  ros::Subscriber imu_sub = n.subscribe("gyro", 50, handle_quat);
+  ros::Subscriber imu_sub = n.subscribe("android_gyro", 50, handle_quat);
   ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odom", 50);
   tf::TransformBroadcaster broadcaster;
 
