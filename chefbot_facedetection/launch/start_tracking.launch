@@ -1,0 +1,18 @@
+<launch>
+
+  <param name="angularSpeed" value="0.4" />
+<!-- Launching USB CAM launch files and Dynamixel controllers -->
+
+  <include file="$(find astra_launch)/launch/astra.launch"/> 
+  <!--<include file="$(find face_tracker_control)/launch/start_dynamixel.launch"/>  -->
+
+
+<!-- Starting face tracker node -->
+   <rosparam file="$(find chefbot_facedetection)/config/fronttrack.yaml" command="load"/>
+
+   <node name="face_tracker" pkg="chefbot_facedetection" type="face_tracker_node" output="screen" />
+   <node name="control" pkg="chefbot_facedetection" type="controllernode"  >
+   		<remap from="cmd_vel" to="cmd_navigation"/>
+   </node>	
+   	
+</launch>

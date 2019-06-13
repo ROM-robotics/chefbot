@@ -1,6 +1,6 @@
 <launch>
   <arg name="odom_topic"     default="odom"/>
-  <arg name="tf_broadcast" default="false"/>
+  <arg name="tf_broadcast" default="true"/>
 
   <arg name="use_map_topic"  default="true"/>
   <arg name="scan_topic"     default="scan"/>

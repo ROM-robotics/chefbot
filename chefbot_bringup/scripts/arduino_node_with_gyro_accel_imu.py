@@ -51,7 +51,7 @@ class Arduino_Class(object):
 		self._Counter=0
 
 		self.imu = Imu()
-		self.imu.header.frame_id = "base_link"
+		self.imu.header.frame_id = "imu"
 		self.imu.orientation_covariance[0] = 1e6;
 		self.imu.orientation_covariance[1] = 0;
 		self.imu.orientation_covariance[2] = 0;
