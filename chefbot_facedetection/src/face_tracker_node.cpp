@@ -23,7 +23,7 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
-* This code will track the faces using ROS 
+* This code will track the faces using ROS
 */
 
 
@@ -56,7 +56,7 @@ class Face_Detector
   image_transport::ImageTransport it_;
   image_transport::Subscriber image_sub_;
   image_transport::Publisher image_pub_;
- 
+
   ros::Publisher face_centroid_pub;
 
   chefbot_facedetection::centroid face_centroid;
@@ -64,7 +64,7 @@ class Face_Detector
   string input_image_topic, output_image_topic, haar_file_face;
   int face_tracking, display_original_image, display_tracking_image, center_offset, screenmaxx;
 
-  
+
 public:
   Face_Detector()
     : it_(nh_)
@@ -100,16 +100,16 @@ public:
 
   catch(int e)
   {
-   
+
       ROS_WARN("Parameters are not properly loaded from file, loading defaults");
-	
+
   }
 
     // Subscribe to input video feed and publish output video feed
-    image_sub_ = it_.subscribe(input_image_topic, 1, 
+    image_sub_ = it_.subscribe(input_image_topic, 1,
       &Face_Detector::imageCb, this);
     image_pub_ = it_.advertise(output_image_topic, 1);
-   
+
     face_centroid_pub = nh_.advertise<chefbot_facedetection::centroid>("/face_centroid",10);
 
 
@@ -143,7 +143,7 @@ public:
 	    if( !cascade.load( cascadeName ) )
 	    {
 		cerr << "ERROR: Could not load classifier cascade" << endl;
-		
+
 	    }
 
 
@@ -156,9 +156,9 @@ public:
             image_pub_.publish(cv_ptr->toImageMsg());
 
             waitKey(30);
-  
+
 }
- 
+
 void detectAndDraw( Mat& img, CascadeClassifier& cascade)
 {
     double t = 0;
@@ -187,14 +187,14 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade)
         1.1, 15, 0
         |CASCADE_SCALE_IMAGE,
         Size(30, 30) );
-   
+
     t = (double)cvGetTickCount() - t;
 
     if(faces.size()==0){
       ROS_INFO("No face Detect");
 
-        face_centroid.x = 310;
-        face_centroid.y = 310;
+        face_centroid.x = 320;
+        face_centroid.y = 240;
 
         face_centroid_pub.publish(face_centroid);
     }
@@ -219,7 +219,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade)
    	    face_centroid.x = center.x;
    	    face_centroid.y = center.y;
 
-  
+
             //Publishing centroid of detected face
   	    face_centroid_pub.publish(face_centroid);
 
@@ -231,14 +231,14 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade)
 
     }
   }//end of else
-    //Adding lines and left | right sections 
+    //Adding lines and left | right sections
 
     Point pt1, pt2,pt3,pt4,pt5,pt6;
 
     //Center line
     pt1.x = screenmaxx / 2;
     pt1.y = 0;
- 
+
     pt2.x = screenmaxx / 2;
     pt2.y = 480;
 
@@ -275,7 +275,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade)
 }
 
 
- 
+
 };
 
 int main(int argc, char** argv)
