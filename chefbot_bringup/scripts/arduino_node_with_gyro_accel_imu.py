@@ -104,7 +104,7 @@ class Arduino_Class(object):
 		self._Req_subscriber = rospy.Subscriber('rpm_req_msg',rpm,self._Handle_rpm_request)
 
 		self._Act_publisher = rospy.Publisher('rpm_act_msg',Vector3Stamped,queue_size = 10)
-		self._Imu_publisher = rospy.Publisher('mpu9250_imu',Imu,queue_size=10)
+		self._Imu_publisher = rospy.Publisher('imu/data_raw',Imu,queue_size=10)
 		self._SerialPublisher = rospy.Publisher('serial', String,queue_size=10)
 
 
@@ -158,6 +158,7 @@ class Arduino_Class(object):
 					self.acce_Z = float(li[6])
 					#rospy.loginfo("oK i got imu")
 
+					self.imu.header.stamp = ros_time
 					self.imu.angular_velocity.x = self.gyro_X
 					self.imu.angular_velocity.y = self.gyro_Y
 					self.imu.angular_velocity.z = self.gyro_Z

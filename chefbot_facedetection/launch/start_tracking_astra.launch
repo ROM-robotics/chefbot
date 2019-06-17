@@ -10,9 +10,9 @@
 <!-- Starting face tracker node -->
    <rosparam file="$(find chefbot_facedetection)/config/fronttrack.yaml" command="load"/>
 
-   <node name="face_tracker" pkg="chefbot_facedetection" type="face_tracker_node" output="screen" />
+   <node name="face_tracker" pkg="chefbot_facedetection" type="face_tracker_astra" output="screen" />
 
-   <node name="control" pkg="chefbot_facedetection" type="controllernode"  >
+   <node name="control" pkg="chefbot_facedetection" type="controller_node"  >
    		<remap from="cmd_vel" to="cmd_navigation"/>
    </node>
 

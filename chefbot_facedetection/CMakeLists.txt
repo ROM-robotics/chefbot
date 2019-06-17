@@ -208,18 +208,16 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(face_tracker_node src/face_tracker_node.cpp)
-
-target_link_libraries(face_tracker_node
-   ${catkin_LIBRARIES}
-   ${OpenCV_LIBRARIES}
- )
-add_dependencies(face_tracker_node chefbot_facedetection_generate_messages_cpp)
+add_executable(face_tracker_astra src/face_tracker_astra_camera.cpp)
+target_link_libraries(face_tracker_astra ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+add_dependencies(face_tracker_astra chefbot_facedetection_generate_messages_cpp)
 
 
 
-add_executable(controllernode src/controller.cpp)
-target_link_libraries(controllernode
-   ${catkin_LIBRARIES}
- )
-add_dependencies(controllernode chefbot_facedetection_generate_messages_cpp)
+add_executable(controller_node src/controller.cpp)
+target_link_libraries(controller_node ${catkin_LIBRARIES})
+add_dependencies(controller_node chefbot_facedetection_generate_messages_cpp)
+
+add_executable(face_tracker_webcam src/face_tracker_webcam.cpp)
+target_link_libraries(face_tracker_webcam ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+add_dependencies(face_tracker_webcam chefbot_facedetection_generate_messages_cpp)

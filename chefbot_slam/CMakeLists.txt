@@ -9,17 +9,12 @@ project(chefbot_slam)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   actionlib
-  depthimage_to_laserscan
+  actionlib_msgs
   geometry_msgs
   move_base_msgs
-  nav_msgs
-  openni_launch
-  robot_pose_ekf
-  robot_state_publisher
   roscpp
-  rospy
   std_msgs
-  tf
+  visualization_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -79,7 +74,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   geometry_msgs#   move_base_msgs#   nav_msgs#   std_msgs
+#   actionlib_msgs#   geometry_msgs#   move_base_msgs#   std_msgs#   visualization_msgs
 # )
 
 ################################################
@@ -114,7 +109,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES chefbot_slam
-#  CATKIN_DEPENDS actionlib depthimage_to_laserscan geometry_msgs move_base_msgs nav_msgs openni_launch robot_pose_ekf robot_state_publisher roscpp rospy std_msgs tf
+#  CATKIN_DEPENDS actionlib actionlib_msgs geometry_msgs move_base_msgs roscpp std_msgs visualization_msgs
 #  DEPENDS system_lib
 )
 
@@ -206,3 +201,6 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+add_executable(square_1m src/square.cpp)
+target_link_libraries(square_1m ${catkin_LIBRARIES})

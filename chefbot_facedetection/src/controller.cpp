@@ -78,9 +78,4 @@ void::ControlClass::callback(const chefbot_facedetection::centroid::ConstPtr& ms
   }
   pub.publish(tt);
 
-  // if(x<=leftMargin)       { tt.angular.z = angularZ; }
-  // else if(x>=rightMargin) { tt.angular.z = -angularZ; }
-  // else                    { tt.angular.z = 0.0; }
-  //
-  // pub.publish(tt);
 }
