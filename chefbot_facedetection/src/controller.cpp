@@ -7,20 +7,23 @@
 
 float old_angular_z = 0.0;
 float angular_z = 0.0;// 0.23
-int leftMargin = 295;
-int rightMargin= 345;
+int leftMargin = 300;
+int rightMargin= 340;
+int centerSetPoint = 320;
 float maxAngularVelocity = 1.0;
 float minAngularVelocity = -1.0;
-float Kp =   0.7;
-float Ki =   0.01;
-float Kd =   0.6;
+float Kp =   0.0;
+float Ki =   0.00;
+float Kd =   0.0;
 
 
 int main(int argc,char** argv)
 {
   ros::init(argc,argv,"face_tracker_contrller_node");
   ros::NodeHandle n;
-
+  ros::param::get("/Kp", Kp);
+  ros::param::get("/Ki", Ki);
+  ros::param::get("/Kd", Kd);
   ControlClass cc(&n);
   ros::spin();
   return 0;
@@ -41,21 +44,28 @@ void ControlClass::initAll()
 }
 
 
-float::ControlClass::tunePID(float old_angular_z, int req_x, int act_x)
+float::ControlClass::tunePID(float old_angular_z, int setPoint, int actPoint)
 {
+	
+
   float new_angular_z = 0.0;
   float new_x = 0.0;
   double err=0.0;
   double last_err = 0.0;
-  double pidTerm = 0.0;
+  //double pidTerm = 0.0;
   double int_err = 0.0;
-  err = req_x - act_x;
+  err = setPoint - actPoint;
+  
 
   int_err += err;
-  pidTerm = Kp * err + Kd * (err - last_err) + Ki * int_err;
+  new_angular_z = (float)Kp * err ;//+ K'd * (err - last_err) + Ki * int_err;
+ 
+  ROS_INFO_STREAM("KJDFKSL"<< Kp);
 
-  new_x = constrain(double(old_angular_z)*2/640.0 + pidTerm, minAngularVelocity,maxAngularVelocity);
-  new_angular_z = 2/640 * new_x;
+ // new_x = constrain(double(old_angular_z)*2/640.0 + pidTerm, minAngularVelocity,maxAngularVelocity);
+ // new_angular_z = 2/640 * new_x;
+
+  
   
   return new_angular_z;
 }
@@ -63,19 +73,17 @@ float::ControlClass::tunePID(float old_angular_z, int req_x, int act_x)
 
 void::ControlClass::callback(const chefbot_facedetection::centroid::ConstPtr& msg)
 {
+
+
   geometry_msgs::Twist tt;
-  int act_x = msg->x;
-  int req_x = 320;
-
-  if(act_x <= 300 || act_x >= 340)
+  if(msg->x < 310 || msg->x >330 )
   {
-      angular_z = tunePID(old_angular_z,req_x, act_x);
-      old_angular_z = angular_z;
-      tt.angular.z = angular_z;
+    tt.angular.z=0.00000;
   }
-  else{
-    tt.angular.z = 0.0;
+  else
+  {
+  tt.angular.z= tunePID(old_angular_z,centerSetPoint,msg->x);
+  
   }
-  pub.publish(tt);
-
+  pub.publish(tt); 
 }

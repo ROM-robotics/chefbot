@@ -57,7 +57,7 @@ int main(int argc,char** argv)
   waypoints[3].position.z = 0.0;
 
   for(int i=0;i<4;i++)
-  {// waypoints[i].orientation = orientation[i];
+  {//waypoints[i].orientation = orientation[i];
     waypoints[i].orientation.x = quaternions[i].x;
     waypoints[i].orientation.y = quaternions[i].y;
     waypoints[i].orientation.z = quaternions[i].z;
@@ -86,7 +86,7 @@ int main(int argc,char** argv)
     markers.points[i] = waypoints[i].position;
   }
 
-  ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",5);
+  //ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",5);
   ros::Publisher marker_pub = nh.advertise<visualization_msgs::Marker>
     ("waypoints",5);
 

@@ -57,16 +57,40 @@ int main(int argc,char **argv)
         std::vector<Rect> faces;
         face_cascade.detectMultiScale( image, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
 
-        if(faces.size() == 0) { fc.x = 320;fc.y=240;}
-        else{
+        if(faces.size() <= 0 ) 
+        { 
+        	fc.x = 320;fc.y=240;
+        }
+        else
+        {
         // Draw circles on the detected faces
-        for( int i = 0; i < faces.size(); i++ )
-          {
-            Point center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
-            ellipse( image, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-            fc.x = faces[0].x + faces[0].width*0.5;
-            fc.y = faces[0].y + faces[0].width*0.5;
-          }
+        	int face_width_array[faces.size()];
+
+	        for( int i = 0; i < faces.size(); i++ )
+	        {
+	            Point center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
+	            ellipse( image, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
+	            
+	            face_width_array[i] = faces[i].width;
+			}
+			// *******************************************************************
+			// Sorting (Big) helper variable
+			int biggest,c,location = 0;
+			int size = faces.size();
+
+			biggest = face_width_array[0];
+
+			for(c=1;c<size;c++)
+			{
+				if(face_width_array[c] > biggest)
+				{
+					biggest = face_width_array[c];
+					location = c;
+				}
+			}
+			//**********************************************************************
+			fc.x = faces[location].x + faces[location].width*0.5;
+	        fc.y = faces[location].y + faces[location].width*0.5;
 
         }
         imshow( "Detected Face", image );
