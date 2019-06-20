@@ -1,6 +1,7 @@
 <launch>
-	<arg name="imu_node" value="true"/>
-  <arg name="face_detect" value="true"/>
+	<arg name="imu_node" value="false"/>
+  <arg name="face_detect" value="false"/>
+	<arg name="laser_scan" value="true"/>
 
 	<node name="twistToMotors" pkg="chefbot_bringup" type="twist_to_motors" output="screen">
     <remap from="cmd_vel" to="cmd_navigation"/>
@@ -24,6 +25,10 @@
 	-->
 	</node>
 
+	<!-- joystick
+	<node pkg="chefbot_joystick" type="joystick" name="joystick_node" />
+	-->
+
 	<group if="$(eval imu_node == true)">
 
 		<node pkg="tf" type="static_transform_publisher"
@@ -45,10 +50,18 @@
 
 	</group>
 
+
+
   <group if="$(eval face_detect == true)">
    <include file="$(find chefbot_facedetection)/launch/start_tracking_usbcam.launch" />
   </group>
 
+	<group if="$(eval laser_scan == true)">
+	 <include file="$(find rplidar_ros)/launch/rplidar.launch" />
+	 <include file="$(find chefbot_slam)/launch/start_scan.launch" />
 
+
+	 <node name="baselink_laser_tf" type="static_transform_publisher" pkg="tf" args="0 0 0.1 0 0 0 1  /base_link laser  100"/>
+	</group>
 
 </launch>

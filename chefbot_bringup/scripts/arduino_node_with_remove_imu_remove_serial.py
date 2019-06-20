@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 '''
+
 Arduino_node.py - Receive sensor values from Arduino board and publish as topics
 
 Created September 2014
@@ -9,6 +10,8 @@ Copyright(c) 2014 Lentin Joseph
 
 Some portion borrowed from  Rainer Hessmer blog
 http://www.hessmer.org/blog/
+
+edited by ko su san(ghostman)
 '''
 
 #Python client library for ROS
@@ -50,37 +53,7 @@ class Arduino_Class(object):
 
 		self._Counter=0
 
-		self.imu = Imu()
-		self.imu.header.frame_id = "gyro_link"
-		self.imu.orientation_covariance[0] = 1e6;
-		self.imu.orientation_covariance[1] = 0;
-		self.imu.orientation_covariance[2] = 0;
-		self.imu.orientation_covariance[3] = 0;
-		self.imu.orientation_covariance[4] = 1e6;
-		self.imu.orientation_covariance[5] = 0;
-		self.imu.orientation_covariance[6] = 0;
-		self.imu.orientation_covariance[7] = 0;
-		self.imu.orientation_covariance[8] = 1e-6;
 
-		self.imu.angular_velocity_covariance[0] = 1e6;
-		self.imu.angular_velocity_covariance[1] = 0;
-		self.imu.angular_velocity_covariance[2] = 0;
-		self.imu.angular_velocity_covariance[3] = 0;
-		self.imu.angular_velocity_covariance[4] = 1e6;
-		self.imu.angular_velocity_covariance[5] = 0;
-		self.imu.angular_velocity_covariance[6] = 0;
-		self.imu.angular_velocity_covariance[7] = 0;
-		self.imu.angular_velocity_covariance[8] = 1e-6;
-
-		self.imu.linear_acceleration_covariance[0] = -1;
-		self.imu.linear_acceleration_covariance[1] = 0;
-		self.imu.linear_acceleration_covariance[2] = 0;
-		self.imu.linear_acceleration_covariance[3] = 0;
-		self.imu.linear_acceleration_covariance[4] = 0;
-		self.imu.linear_acceleration_covariance[5] = 0;
-		self.imu.linear_acceleration_covariance[6] = 0;
-		self.imu.linear_acceleration_covariance[7] = 0;
-		self.imu.linear_acceleration_covariance[8] = 0;
 
 		self.vector3 = Vector3Stamped()
 #######################################################################################################################
@@ -101,8 +74,8 @@ class Arduino_Class(object):
 		self._Req_subscriber = rospy.Subscriber('rpm_req_msg',rpm,self._Handle_rpm_request)
 
 		self._Act_publisher = rospy.Publisher('rpm_act_msg',Vector3Stamped,queue_size = 10)
-		self._Imu_publisher = rospy.Publisher('imu/data_raw',Imu,queue_size=10)
-		self._SerialPublisher = rospy.Publisher('serial', String,queue_size=10)
+		#self._Imu_publisher = rospy.Publisher('mpu9250_imu',Imu,queue_size=10)
+		#self._SerialPublisher = rospy.Publisher('serial', String,queue_size=10)
 
 
 
@@ -123,7 +96,7 @@ class Arduino_Class(object):
 
 	def _HandleReceivedLine(self,  line):
 		self._Counter = self._Counter + 1
-		self._SerialPublisher.publish(String(str(self._Counter) + ", in:  " + line))
+		#self._SerialPublisher.publish(String(str(self._Counter) + ", in:  " + line))
 		#rospy.loginfo("hello1")
 
 		if(len(line) > 0):
@@ -146,22 +119,15 @@ class Arduino_Class(object):
 					self.vector3.vector.z = self.time_
 					self._Act_publisher.publish(self.vector3)
 
-				if(li[0] == '6'):
-					self.gyro_X = float(li[1])
-					self.gyro_Y = float(li[2])
-					self.gyro_Z = float(li[3])
-					self.acce_X = float(li[4])
-					self.acce_Y = float(li[5])
-					self.acce_Z = float(li[6])
-					#rospy.loginfo("oK i got imu")
+				# if(li[0] == '6'):
+				# 	self.gyro_X = float(li[1])
+				# 	self.gyro_Y = float(li[2])
+				# 	self.gyro_Z = float(li[3])
+				# 	self.acce_X = float(li[4])
+				# 	self.acce_Y = float(li[5])
+				# 	self.acce_Z = float(li[6])
+				# 	#rospy.loginfo("oK i got imu")
 
-					self.imu.angular_velocity.x = self.gyro_X
-					self.imu.angular_velocity.y = self.gyro_Y
-					self.imu.angular_velocity.z = self.gyro_Z
-					self.imu.linear_acceleration.x = self.acce_X
-					self.imu.linear_acceleration.y = self.acce_Y
-					self.imu.linear_acceleration.z = self.acce_Z
-					self._Imu_publisher.publish(self.imu)
 
 			except:
 				#rospy.logwarn("Error in Sensor values")
@@ -174,7 +140,7 @@ class Arduino_Class(object):
 
 
 	def _WriteSerial(self, message):
-		self._SerialPublisher.publish(String(str(self._Counter) + ", out: " + message))
+		#self._SerialPublisher.publish(String(str(self._Counter) + ", out: " + message))
 		self._SerialDataGateway.Write(message)
 
 #######################################################################################################################

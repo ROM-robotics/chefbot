@@ -15,10 +15,5 @@ void sendMessage(float y) {
     cmdMessenger.sendCmdArg(end_bit);
     cmdMessenger.sendCmdEnd();
     
-    cmdMessenger.sendCmdStart(imu);
-    cmdMessenger.sendCmdArg(ypr[2],6);
-    cmdMessenger.sendCmdArg(ypr[1],6);
-    cmdMessenger.sendCmdArg(ypr[0],6);
-    cmdMessenger.sendCmdArg(end_bit);
-    cmdMessenger.sendCmdEnd();
+
 }

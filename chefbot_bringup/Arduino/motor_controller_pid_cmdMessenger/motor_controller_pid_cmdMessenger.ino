@@ -29,21 +29,9 @@
 #include <CmdMessenger.h>
 
 /*------------------IMU-------------------- */
-#include "I2Cdev.h"
-#include "MPU6050_6Axis_MotionApps20.h"
-MPU6050 mpu;
-// MPU control/status vars
-bool dmpReady = false;  // set true if DMP init was successful
-uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
-uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
-uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
-uint16_t fifoCount;     // count of all bytes currently in FIFO
-uint8_t fifoBuffer[64]; // FIFO storage buffer
 
-Quaternion q;
-float ypr[3];           // [yaw, pitch, roll]
-VectorFloat gravity;    // [x, y, z]
-volatile bool mpuInterrupt = false;
+
+
 //--------------------new-------------------/
 int end_bit = 0;
 char field_separator   = ',';
@@ -122,7 +110,7 @@ void setRPM()
 void setup() { 
  setupMessenger();
  setupMotors();
- setupIMU();
+ //setupIMU();
  setupEncoders(); 
 }
 
@@ -148,7 +136,7 @@ void loop() {
     motor_right->setSpeed(abs(PWM_val1));
     motor_left->setSpeed(abs(PWM_val2));
 
-    updateIMU();
+    //updateIMU();
 
     float y = x/1000.0; // millis to seconds
     sendMessage(y);
