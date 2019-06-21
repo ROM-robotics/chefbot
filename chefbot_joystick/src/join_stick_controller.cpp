@@ -41,8 +41,8 @@ void::ControlClass::callback(const geometry_msgs::Twist::ConstPtr& msg)
   float z = msg->angular.z;
 
 
-  tt.linear.x = 0.25;
-  tt.angular.z = 0.8;
+  tt.linear.x = 0.3 * x;
+  tt.angular.z = 0.7* z;
 
   pub.publish(tt);
 }

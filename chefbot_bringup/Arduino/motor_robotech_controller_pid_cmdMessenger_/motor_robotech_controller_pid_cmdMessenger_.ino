@@ -11,9 +11,9 @@
  #include <WProgram.h>
 #endif
 
-//#define right_encoderA      2     // (interrupt numbers 0)
-#define right_encoderA      2     // (interrupt numbers 1)
-#define right_encoderB      3
+
+#define right_encoderA      2     // (interrupt numbers 0)
+#define right_encoderB      3     // (interrupt numbers 1)
 #define left_encoderA      18     // (interrupt numbers 5)
 #define left_encoderB      19     // (interrupt numbers 4)
 #define SMOOTH      10
@@ -29,8 +29,11 @@
 #include <CmdMessenger.h>
 
 /*------------------IMU-------------------- */
+long accelX,accelY,accelZ;
+volatile float gForceX,gForceY,gForceZ;
 
-
+long gyroX,gyroY,gyroZ;
+volatile float rotX,rotY,rotZ;
 
 //--------------------new-------------------/
 int end_bit = 0;
@@ -110,7 +113,7 @@ void setRPM()
 void setup() { 
  setupMessenger();
  setupMotors();
- //setupIMU();
+ setupIMU();
  setupEncoders(); 
 }
 
@@ -136,7 +139,7 @@ void loop() {
     motor_right->setSpeed(abs(PWM_val1));
     motor_left->setSpeed(abs(PWM_val2));
 
-    //updateIMU();
+    updateIMU();
 
     float y = x/1000.0; // millis to seconds
     sendMessage(y);

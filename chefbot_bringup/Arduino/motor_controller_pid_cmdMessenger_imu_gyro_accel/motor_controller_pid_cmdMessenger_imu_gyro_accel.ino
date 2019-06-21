@@ -12,8 +12,8 @@
 #endif
 
 //#define right_encoderA      2     // (interrupt numbers 0)
-#define right_encoderA      3     // (interrupt numbers 1)
-#define right_encoderB      4
+#define right_encoderA      2    // (interrupt numbers 1)
+#define right_encoderB      3
 #define left_encoderA      18     // (interrupt numbers 5)
 #define left_encoderB      19     // (interrupt numbers 4)
 #define SMOOTH      10
