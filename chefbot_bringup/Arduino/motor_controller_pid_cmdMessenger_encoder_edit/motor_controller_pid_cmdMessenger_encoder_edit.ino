@@ -113,7 +113,7 @@ void setRPM()
 void setup() { 
  setupMessenger();
  setupMotors();
- setupIMU();
+ //setupIMU();
  setupEncoders(); 
 }
 
@@ -139,7 +139,7 @@ void loop() {
     motor_right->setSpeed(abs(PWM_val1));
     motor_left->setSpeed(abs(PWM_val2));
 
-    updateIMU();
+    //updateIMU();
 
     float y = x/1000.0; // millis to seconds
     sendMessage(y);
