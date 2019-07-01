@@ -126,7 +126,7 @@ int main(int argc, char** argv){
     if (dxy_ave < 0) dxy_ave *= linear_scale_negative;
 //-----------------------------------------------------------------//
     dx = cos(dth) * dxy_ave;
-    dy = sin(dth) * dxy_ave; // Why minus?
+    dy = -sin(dth) * dxy_ave; // Why minus?
 
     x_pos += (cos(theta) * dx - sin(theta) * dy);
     y_pos += (sin(theta) * dx + cos(theta) * dy);
