@@ -207,3 +207,6 @@ target_link_libraries(square_1m ${catkin_LIBRARIES})
 
 add_executable(forward src/forward.cpp)
 target_link_libraries(forward ${catkin_LIBRARIES})
+
+add_executable(forward_backward src/forward_backward.cpp)
+target_link_libraries(forward_backward ${catkin_LIBRARIES})

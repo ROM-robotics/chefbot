@@ -3,7 +3,7 @@
 	<arg name="face_detect" value="false"/>
 	<arg name="laser_scan" value="true"/>
 	<arg name="android_joystick" value="true"/>
-	<arg name="gmapping" value="true"/>
+	<arg name="gmapping" value="false"/>
 	<arg name="amcl" value="true"/>
 
 	<node name="twistToMotors" pkg="chefbot_bringup" type="twist_to_motors" output="screen">
@@ -49,7 +49,7 @@
 	      <param name="angular_scale_negative" value="2.1" />
 	      <param name="angular_scale_accel" value="0.0" />
 	      <param name="alpha" value="0.5" />
-	  </node> 
+	  </node>
 	</group>
       -->
   	<group if="$(eval face_detect == true)">

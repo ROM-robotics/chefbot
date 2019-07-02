@@ -1,15 +1,18 @@
 TrajectoryPlannerROS:
-
+#controller_frequency:3.0
 # Robot Configuration Parameters
-  max_vel_x: 1.0
-  min_vel_x: -1.0
+  max_vel_x: 0.5
+  min_vel_x: -0.5
 
-  max_vel_theta:  2.5
-  min_vel_theta: -2.5
+  max_vel_theta:  1.0
+  min_vel_theta: -1.0
   min_in_place_vel_theta: 0.5
   
-  acc_lim_x: 0.8
-  acc_lim_theta: 1.36
+  #add
+  escape_vel: -0.1  
+
+  acc_lim_x: 0.3
+  acc_lim_theta: 1.0
 
 # Goal Tolerance Parameters
   yaw_goal_tolerance: 0.3
