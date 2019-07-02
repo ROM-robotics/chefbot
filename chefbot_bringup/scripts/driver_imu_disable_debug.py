@@ -24,7 +24,7 @@ import math
 from SerialDataGateway import SerialDataGateway
 #Importing ROS data types
 from std_msgs.msg import String
-from geometry_msgs.msg import Vector3Stamped
+from geometry_msgs.msg import Vector3Stamped, Vector3
 from chefbot_bringup.msg import rpm
 #Importing ROS data type for IMU
 from sensor_msgs.msg import Imu
@@ -55,7 +55,8 @@ class Arduino_Class(object):
 
 
 
-		self.vector3 = Vector3Stamped()
+		self.vector3Stamped = Vector3Stamped()
+		self.vector3 = Vector3()
 #######################################################################################################################
 		#Get serial port and baud rate of Tiva C Arduino
 		port = rospy.get_param("~port", "/dev/ttyACM0")
@@ -74,8 +75,8 @@ class Arduino_Class(object):
 		self._Req_subscriber = rospy.Subscriber('rpm_req_msg',rpm,self._Handle_rpm_request)
 
 		self._Act_publisher = rospy.Publisher('rpm_act_msg',Vector3Stamped,queue_size = 10)
-		self._Imu_publisher = rospy.Publisher('mpu9250_imu',Imu,queue_size=10)
-		#self._SerialPublisher = rospy.Publisher('serial', String,queue_size=10)
+		self._gyro_pub = rospy.Publisher('gyro',Vector3,queue_size=10)
+		self._SerialPublisher = rospy.Publisher('serial', String,queue_size=10)
 
 
 
@@ -85,7 +86,7 @@ class Arduino_Class(object):
 		self.req_left_  = msg.req_left
 
 		speed_message = '%d,%d,%d \r' %(int(1),int(self.req_right_),int(self.req_left_))
-		#speed_message = '%d,%d %d,%d \r' %(int(2),int(self.req_right_),int(3),int(self.req_left_))
+		speed_message = '%d,%d %d,%d \r' %(int(2),int(self.req_right_),int(3),int(self.req_left_))
 		self._WriteSerial(speed_message)
 
 
@@ -96,7 +97,7 @@ class Arduino_Class(object):
 
 	def _HandleReceivedLine(self,  line):
 		self._Counter = self._Counter + 1
-		#self._SerialPublisher.publish(String(str(self._Counter) + ", in:  " + line))
+		self._SerialPublisher.publish(String(str(self._Counter) + ", in:  " + line))
 		#rospy.loginfo("hello1")
 
 		if(len(line) > 0):
@@ -113,19 +114,23 @@ class Arduino_Class(object):
 					#rospy.loginfo(self.time_)
 					#rospy.loginfo("oK i got actual rpm")
 
-					self.vector3.header.stamp = ros_time
-					self.vector3.vector.x = self.actual_right
-					self.vector3.vector.y = self.actual_left
-					self.vector3.vector.z = self.time_
-					self._Act_publisher.publish(self.vector3)
+					self.vector3Stamped.header.stamp = ros_time
+					self.vector3Stamped.vector.x = self.actual_right
+					self.vector3Stamped.vector.y = self.actual_left
+					self.vector3Stamped.vector.z = self.time_
+					self._Act_publisher.publish(self.vector3Stamped)
 
-				if(li[0] == '6'):
-					self.gyro_X = float(li[1])
-					self.gyro_Y = float(li[2])
-					self.gyro_Z = float(li[3])
-					self.acce_X = float(li[4])
-					self.acce_Y = float(li[5])
-					self.acce_Z = float(li[6])
+				# if(li[0] == '6'):
+				# 	self.gyro_X = float(li[1])
+				# 	self.gyro_Y = float(li[2])
+				# 	self.gyro_Z = float(li[3])
+				# 	self.vector3.x = self.gyro_X
+				# 	self.vector3.y = self.gyro_Y
+				# 	self.vector3.z = self.gyro_Z
+				# 	self._gyro_pub.publish(self.vector3)
+					#self.acce_X = float(li[4])
+					#self.acce_Y = float(li[5])
+					#self.acce_Z = float(li[6])
 					#rospy.loginfo("oK i got imu")
 
 
@@ -140,7 +145,7 @@ class Arduino_Class(object):
 
 
 	def _WriteSerial(self, message):
-		#self._SerialPublisher.publish(String(str(self._Counter) + ", out: " + message))
+		self._SerialPublisher.publish(String(str(self._Counter) + ", out: " + message))
 		self._SerialDataGateway.Write(message)
 
 #######################################################################################################################

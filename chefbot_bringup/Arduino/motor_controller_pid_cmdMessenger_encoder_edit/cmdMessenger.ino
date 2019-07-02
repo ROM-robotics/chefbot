@@ -2,7 +2,7 @@ void setupMessenger(){
   Serial.begin(115200); 
   cmdMessenger.printLfCr();  
   attachCommandCallbacks();
-  cmdMessenger.sendCmd(Start,"Arduino has started!");  
+  //cmdMessenger.sendCmd(Start,"Arduino has started!");  
 }
 
 
@@ -15,13 +15,13 @@ void sendMessage(float y) {
     cmdMessenger.sendCmdArg(end_bit);
     cmdMessenger.sendCmdEnd();
     
-//    cmdMessenger.sendCmdStart(imu);
-//    cmdMessenger.sendCmdArg(rotX,6);
-//    cmdMessenger.sendCmdArg(rotY,6);
-//    cmdMessenger.sendCmdArg(rotZ,6);
+    cmdMessenger.sendCmdStart(imu);
+    cmdMessenger.sendCmdArg(rotX,6);
+    cmdMessenger.sendCmdArg(rotY,6);
+    cmdMessenger.sendCmdArg(rotZ,6);
 //    cmdMessenger.sendCmdArg(gForceX,6);
 //    cmdMessenger.sendCmdArg(gForceY,6);
 //    cmdMessenger.sendCmdArg(gForceZ,6);
-//    cmdMessenger.sendCmdArg(end_bit);
-//    cmdMessenger.sendCmdEnd();
+    cmdMessenger.sendCmdArg(end_bit);
+    cmdMessenger.sendCmdEnd();
 }
