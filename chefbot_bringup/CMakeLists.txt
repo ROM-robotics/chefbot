@@ -208,6 +208,8 @@ include_directories(
 add_executable(base_controller src/base_controller.cpp)
 target_link_libraries(base_controller ${catkin_LIBRARIES})
 
+add_executable(base_controller_imu src/base_controller_with_imu.cpp)
+target_link_libraries(base_controller_imu ${catkin_LIBRARIES})
 
 add_executable(forward_1meter src/forward_1m.cpp)
 target_link_libraries(forward_1meter ${catkin_LIBRARIES})

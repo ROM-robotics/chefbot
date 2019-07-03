@@ -139,12 +139,16 @@ void loop() {
     motor_right->setSpeed(abs(PWM_val1));
     motor_left->setSpeed(abs(PWM_val2));
 
-    updateIMU();
+    //updateIMU();
 
     float y = x/1000.0; // millis to seconds
     sendMessage(y);
 
     lastMilli = time;
   }
-   
+  //if(time-lastMilliPub >= LOOPTIME) {
+    //publishAll(time-lastMilli);
+    //lastMilliPub = time;
+  //}
+  
 }
