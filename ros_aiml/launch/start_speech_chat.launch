@@ -1,0 +1,22 @@
+<launch>
+
+
+
+	<param name="aiml_path" value="/home/jarvic/bot/catkin_ws/src/ros_aiml/command" />
+
+	<node name="aiml_server" pkg="ros_aiml" type="aiml_server.py" output="screen">
+	</node>
+	<node name="aimls" pkg="android_client" type="gg" output="screen"/>
+
+	<include file="$(find sound_play)/soundplay_node.launch"></include>
+	<node name="aiml_tts" pkg="ros_aiml" type="aiml_tts_client.py" output="screen">
+	</node>
+
+
+	<node name="aiml_speech_recog" pkg="ros_aiml" type="aiml_speech_recog_client.py" output="screen">
+	</node>
+
+	<node name="vc" pkg="vctrol" type="vcc"/>
+
+
+</launch>

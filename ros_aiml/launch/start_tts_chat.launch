@@ -1,0 +1,17 @@
+
+<launch>
+
+	 
+	<!-- start_tts_chat.launch -->
+	<node name="service" pkg="chefbot_joystick" type="table"/>
+	<!--node name="one" pkg="chefbot_joystick" type="one"/-->
+	<param name="aiml_path" value="/home/ghostman/ros_dev/catkin_ws/src/ros_aiml/Table" />
+	<node name="aiml_server" pkg="ros_aiml" type="aiml_server.py" output="screen">
+	</node>
+	<node name="aimls" pkg="android_client" type="gg" output="screen"/>
+	<include file="$(find sound_play)/soundplay_node.launch"></include>
+	<node name="aiml_tts" pkg="ros_aiml" type="aiml_tts_client.py" output="screen">
+	</node>
+	<node name="aiml_client" pkg="ros_aiml" type="aiml_client.py" output="screen">
+	</node>
+</launch>

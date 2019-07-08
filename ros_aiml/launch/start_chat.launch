@@ -1,0 +1,14 @@
+<launch>
+
+	<param name="aiml_path" value="/home/jarvic/bot/catkin_ws/src/ros_aiml/command" />
+	
+
+	<node name="aiml_server" pkg="ros_aiml" type="aiml_server.py" output="screen">
+	</node>
+
+	<node name="aiml_client" pkg="ros_aiml" type="aiml_client.py" output="screen">
+	</node>
+
+	<node name="vc" pkg="vctrol" type="vcc"/>
+	<node name="aimls" pkg="android_client" type="gg" output="screen"/>
+</launch>

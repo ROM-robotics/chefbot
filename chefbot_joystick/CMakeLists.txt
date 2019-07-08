@@ -14,6 +14,12 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   tf
+  robot_state_publisher
+  joint_state_publisher
+  urdf
+  tf
+  nav_msgs
+  move_base_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -204,3 +210,9 @@ include_directories(
 
 add_executable(joystick src/join_stick_controller.cpp)
 target_link_libraries(joystick ${catkin_LIBRARIES})
+
+add_executable(one src/moveone.cpp)
+target_link_libraries(one ${catkin_LIBRARIES})
+
+add_executable(table src/table.cpp)
+target_link_libraries(table ${catkin_LIBRARIES})
