@@ -93,12 +93,12 @@ int main(int argc,char** argv)
 		markers.points[i]=waypoints[i].position;
 	}
 	ROS_INFO("Testing..Server1");
-	
+
 	ros::Publisher cmd_vel_pub=n.advertise<geometry_msgs::Twist>("cmd_vel",5);
 	ros::Publisher marker_pub=n.advertise<visualization_msgs::Marker>("waypoint_markers",5);
 
 	*/
-	move_base move_base("move_base",true);
+	move_base move_base("/robot1/move_base",true);
 
 	ROS_INFO("Waiting for move_base action server...");
 
@@ -115,7 +115,7 @@ int main(int argc,char** argv)
 		goal.target_pose.header.frame_id="map";
 		goal.target_pose.header.stamp=ros::Time::now();
 		goal.target_pose.pose=waypoints[i];
-		
+
 		move_base.sendGoal(goal);
 		bool finished_within_time=move_base.waitForResult(ros::Duration(60));
 
@@ -141,8 +141,8 @@ int main(int argc,char** argv)
 	//ros::shutdown();
 }
 
-static geometry_msgs::Quaternion createQuaternionFromRPY(double roll, double pitch, double yaw) 
-{   
+static geometry_msgs::Quaternion createQuaternionFromRPY(double roll, double pitch, double yaw)
+{
     geometry_msgs::Quaternion q;
     double t0 = cos(yaw * 0.5);
     double t1 = sin(yaw * 0.5);
