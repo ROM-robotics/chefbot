@@ -1,18 +1,17 @@
 <launch>
 
-  <arg name="twist_to_motors" value="0"/>
+
 
   <include file="$(find chefbot_bringup)/launch/urdf.launch" />
- 
-<!-- <arg name="model" default="$(find myrobot1)/urdf/myrobot1.urdf"/>
- -->  <node name="arduino_node" pkg="chefbot_bringup" type="arduino_node_with_remove_imu_remove_serial.py" output="screen">
+
+ <node name="arduino_node" pkg="chefbot_bringup" type="arduino_node_with_remove_imu_remove_serial.py" output="screen">
     <param name="port" value="/dev/ttyACM0" />
     <param name="baudRate" value="115200" />
   </node>
+  
 
 
-  <group if="$(eval twist_to_motors == 1)">
-    <include file="$(find chefbot_bringup)/launch/twist.launch" />
-  </group>
+
+
 
 </launch>
