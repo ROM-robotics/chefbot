@@ -10,8 +10,8 @@ float angular_z = 0.0;// 0.23
 int leftMargin = 300;
 int rightMargin= 340;
 int centerSetPoint = 320;
-float maxAngularVelocity = 1.0;
-float minAngularVelocity = -1.0;
+float maxAngularVelocity = 0.6;
+float minAngularVelocity = -0.6;
 float Kp =   0.0;
 float Ki =   0.00;
 float Kd =   0.0;
@@ -40,7 +40,7 @@ ControlClass::ControlClass(ros::NodeHandle *nh) : n(*nh)
 void ControlClass::initAll()
 {
   sub = n.subscribe("/face_centroid",50,&ControlClass::callback,this);
-  pub = n.advertise<geometry_msgs::Twist>("cmd_navigation",50,true);
+  pub = n.advertise<geometry_msgs::Twist>("cmd_vel",50,true);
 }
 
 
@@ -52,20 +52,20 @@ float::ControlClass::tunePID(float old_angular_z, int setPoint, int actPoint)
   float new_x = 0.0;
   double err=0.0;
   double last_err = 0.0;
-  //double pidTerm = 0.0;
+  double pidTerm = 0.0;
   double int_err = 0.0;
   err = setPoint - actPoint;
   
 
   int_err += err;
-  new_angular_z = (float)Kp * err ;//+ K'd * (err - last_err) + Ki * int_err;
- 
-  ROS_INFO_STREAM("KJDFKSL"<< Kp);
+  pidTerm = (float)Kp * err + Kd * (err - last_err) + Ki * int_err;
+ last_err = err;
+  //ROS_INFO_STREAM("KJDFKSL"<< Kp);
 
- // new_x = constrain(double(old_angular_z)*2/640.0 + pidTerm, minAngularVelocity,maxAngularVelocity);
- // new_angular_z = 2/640 * new_x;
+  new_x = constrain(double(old_angular_z) + pidTerm, minAngularVelocity,maxAngularVelocity);
+  new_angular_z = new_x;
 
-  
+  ROS_INFO_STREAM("cmd_vel"<< new_angular_z);
   
   return new_angular_z;
 }
@@ -76,14 +76,25 @@ void::ControlClass::callback(const chefbot_facedetection::centroid::ConstPtr& ms
 
 
   geometry_msgs::Twist tt;
-  if(msg->x < 310 || msg->x >330 )
+  //geometry_msgs::Twist yy; 
+  	if(msg->x > 290 && msg->x < 350 )
   {
-    tt.angular.z=0.00000;
+    tt.angular.z=0.0;
   }
-  else
+   else 
   {
   tt.angular.z= tunePID(old_angular_z,centerSetPoint,msg->x);
-  
   }
-  pub.publish(tt); 
+	if(msg->y >130 && msg-> y < 190 ){
+  	tt.linear.x = 0.0;
+  }
+   	else if (msg->y < 130)
+  {
+  	tt.linear.x = -0.15;
+  }
+  	else if (msg->y > 190){
+  	tt.linear.x = 0.15;
+  }
+ 
+  pub.publish(tt);
 }

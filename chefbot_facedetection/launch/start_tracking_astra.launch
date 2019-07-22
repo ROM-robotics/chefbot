@@ -1,5 +1,8 @@
 <launch>
 
+		<param name="Kp" value="0.004"/>
+   		<param name="Ki" value="0.00001"/>
+   		<param name="Kd" value="0.01"/>
   <param name="angularSpeed" value="0.4" />
 <!-- Launching USB CAM launch files and Dynamixel controllers -->
 
@@ -13,7 +16,7 @@
    <node name="face_tracker" pkg="chefbot_facedetection" type="face_tracker_astra" output="screen" />
 
    <node name="control" pkg="chefbot_facedetection" type="controller_node"  >
-   		<remap from="cmd_vel" to="cmd_navigation"/>
+   		<!--remap from="cmd_vel" to="cmd_navigation"/-->
    </node>
 
 </launch>

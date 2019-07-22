@@ -2,7 +2,7 @@
 	<arg name="imu_node" value="false"/>
 	<arg name="face_detect" value="false"/>
 	<arg name="laser_scan" value="true"/>
-	<arg name="android_joystick" value="true"/>
+	<arg name="android_joystick" value="false"/>
 	<arg name="gmapping" value="true"/>
 	<arg name="amcl" value="true"/>
 

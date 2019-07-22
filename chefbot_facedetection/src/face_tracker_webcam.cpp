@@ -55,7 +55,7 @@ int main(int argc,char **argv)
  
         // Detect faces
         std::vector<Rect> faces;
-        face_cascade.detectMultiScale( image, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+        face_cascade.detectMultiScale( image, faces, 1.1, 15, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
 
         if(faces.size() <= 0 ) 
         { 
