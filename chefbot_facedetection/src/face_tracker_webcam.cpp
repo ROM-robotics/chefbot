@@ -5,7 +5,7 @@ Only Thing is we need to load our Classifier in palce of cascade_frontalface_alt
 //ROS headers
 #include <ros/ros.h>
 //Centroid message headers
-#include <chefbot_facedetection/centroid.h>
+#include <chefbot_facedetection/w_centroid.h>
 
 
 #include "opencv2/objdetect/objdetect.hpp"
@@ -17,8 +17,7 @@ Only Thing is we need to load our Classifier in palce of cascade_frontalface_alt
    
 using namespace std;
 using namespace cv;
-
-string cascade_name = "/home/ghostman/ros_dev/catkin_ws/src/chefbot_facedetection/src/face.xml";
+string cascade_name = "/home/ghostman/ros_dev/catkin_ws/src/chefbot_facedetection/src/haarcascade_upperbody.xml";
 
 int time_delay = 100;
    
@@ -26,8 +25,8 @@ int main(int argc,char **argv)
 {
     ros::init(argc,argv,"web_cam_detect_node");
     ros::NodeHandle nh;
-    ros::Publisher pub = nh.advertise<chefbot_facedetection::centroid>("/face_centroid",10);
-    chefbot_facedetection::centroid fc;
+    ros::Publisher pub = nh.advertise<chefbot_facedetection::w_centroid>("/face_centroid",10);
+    chefbot_facedetection::w_centroid fc;
 
    // Load Face cascade (.xml file)
        CascadeClassifier face_cascade;
@@ -59,7 +58,7 @@ int main(int argc,char **argv)
 
         if(faces.size() <= 0 ) 
         { 
-        	fc.x = 320;fc.y=240;
+        	fc.x = 320;fc.y=240;fc.wx=115;
         }
         else
         {
@@ -88,15 +87,16 @@ int main(int argc,char **argv)
 					location = c;
 				}
 			}
+			
 			//**********************************************************************
-			fc.x = faces[location].x + faces[location].width*0.5;
+			    fc.x = faces[location].x + faces[location].width*0.5;
 	        fc.y = faces[location].y + faces[location].width*0.5;
+	        fc.wx = faces[location].width;
 
         }
         imshow( "Detected Face", image );
 
         
-
         if(ros::Time::now() - begin >= ros::Duration(0.1))
         {
           //do something

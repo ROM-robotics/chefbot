@@ -2,7 +2,7 @@
 #define CONTROLLER_CLASS_H
 
 #include <ros/ros.h>
-#include <chefbot_facedetection/centroid.h>
+#include <chefbot_facedetection/w_centroid.h>
 #include <geometry_msgs/Twist.h>
 
 class ControlClass
@@ -16,7 +16,7 @@ private:
 
   void initAll();
 
-  void callback(const chefbot_facedetection::centroid::ConstPtr &msg);
+  void callback(const chefbot_facedetection::w_centroid::ConstPtr &msg);
   float tunePID(float angular_z, int req_x, int act_x);
 };
 

@@ -2,7 +2,7 @@
 
 #include "controller.h"
 #include <ros/ros.h>
-#include <chefbot_facedetection/centroid.h>
+#include <chefbot_facedetection/w_centroid.h>
 #include <geometry_msgs/Twist.h>
 
 float old_angular_z = 0.0;
@@ -71,7 +71,7 @@ float::ControlClass::tunePID(float old_angular_z, int setPoint, int actPoint)
 }
 
 
-void::ControlClass::callback(const chefbot_facedetection::centroid::ConstPtr& msg)
+void::ControlClass::callback(const chefbot_facedetection::w_centroid::ConstPtr& msg)
 {
 
 
@@ -85,7 +85,7 @@ void::ControlClass::callback(const chefbot_facedetection::centroid::ConstPtr& ms
   {
   tt.angular.z= tunePID(old_angular_z,centerSetPoint,msg->x);
   }
-	if(msg->y >130 && msg-> y < 190 ){
+	/*if(msg->y >130 && msg-> y < 190 ){
   	tt.linear.x = 0.0;
   }
    	else if (msg->y < 130)
@@ -94,6 +94,15 @@ void::ControlClass::callback(const chefbot_facedetection::centroid::ConstPtr& ms
   }
   	else if (msg->y > 190){
   	tt.linear.x = 0.15;
+  }*/
+  if (msg->wx <100 ){
+    tt.linear.x = 0.2;
+  }
+  else if (msg->wx >130){
+    tt.linear.x = -0.2;
+  }
+  else{
+    tt.linear.x = 0.0;
   }
  
   pub.publish(tt);

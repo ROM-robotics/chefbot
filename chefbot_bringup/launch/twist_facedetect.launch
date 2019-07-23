@@ -1,10 +1,10 @@
 <launch>
 	<arg name="imu_node" value="false"/>
-	<arg name="face_detect" value="false"/>
+	<arg name="face_detect" value="true"/>
 	<arg name="laser_scan" value="false"/>
 	<arg name="android_joystick" value="false"/>
-	<arg name="gmapping" value="true"/>
-	<arg name="amcl" value="true"/>
+	<arg name="gmapping" value="false"/>
+	<arg name="amcl" value="false"/>
 
 	<node name="twistToMotors" pkg="chefbot_bringup" type="twist_to_motors" output="screen">
     	<!--remap from="cmd_vel" to="cmd_navigation"/-->

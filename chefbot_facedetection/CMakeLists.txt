@@ -59,6 +59,7 @@ find_package(OpenCV REQUIRED COMPONENTS core imgproc highgui objdetect)
 add_message_files(
   FILES
    centroid.msg
+   w_centroid.msg
 #   Message2.msg
  )
 

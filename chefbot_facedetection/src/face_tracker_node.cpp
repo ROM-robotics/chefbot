@@ -40,7 +40,7 @@
 #include "opencv2/objdetect.hpp"
 
 //Centroid message headers
-#include <chefbot_facedetection/centroid.h>
+#include <chefbot_facedetection/w_centroid.h>
 
 //OpenCV window name
 static const std::string OPENCV_WINDOW = "raw_image_window";
@@ -59,7 +59,7 @@ class Face_Detector
 
   ros::Publisher face_centroid_pub;
 
-  chefbot_facedetection::centroid face_centroid;
+  chefbot_facedetection::w_centroid face_centroid;
 
   string input_image_topic, output_image_topic, haar_file_face;
   int face_tracking, display_original_image, display_tracking_image, center_offset, screenmaxx;
@@ -76,7 +76,7 @@ public:
 
   input_image_topic = "/camera/rgb/image_raw";
   output_image_topic = "/face_detector/raw_image";
-  haar_file_face = "face.xml";
+  haar_file_face = "/home/mohmoh/sat/catkin_ws/src/chefbot-master/chefbot_facedetection/src/haarcascade_upperbody.xml";
   face_tracking = 1;
   display_original_image = 1;
   display_tracking_image = 1;
@@ -110,7 +110,7 @@ public:
       &Face_Detector::imageCb, this);
     image_pub_ = it_.advertise(output_image_topic, 1);
 
-    face_centroid_pub = nh_.advertise<chefbot_facedetection::centroid>("/face_centroid",10);
+    face_centroid_pub = nh_.advertise<chefbot_facedetection::w_centroid>("/face_centroid",10);
 
 
   }
