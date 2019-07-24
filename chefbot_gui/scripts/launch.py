@@ -34,7 +34,7 @@ def faceLaunch():
 
 b1 = Button(topFrame, text="SLAM", command=slamLaunch, padx=40, pady=40 ,bg='blue' ,bd='5',fg='white', font=('Times New Roman','40'), width=8, height=2)
 
-b2 = Button(topFrame, text="SHUTDOWN", command=exitLaunch, padx=40, pady=40 ,bg='red' ,bd='5' ,fg='white', font=('Times New Roman','40'), width=8)
+b2 = Button(topFrame, text="REBOOT", command=exitLaunch, padx=40, pady=40 ,bg='red' ,bd='5' ,fg='white', font=('Times New Roman','40'), width=8)
 
 b3 = Button(topFrame, text="Go To", command=programLaunch, padx=40, pady=40 ,bg='blue' ,bd='5' ,fg='white', font=('Times New Roman','40'), width=8)
 

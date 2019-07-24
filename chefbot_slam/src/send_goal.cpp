@@ -1,5 +1,4 @@
 #include <ros/ros.h>
-#include <std_msgs/String.h>
 #include <actionlib_msgs/GoalID.h>
 #include <actionlib_msgs/GoalStatus.h>
 #include <actionlib_msgs/GoalStatusArray.h>
@@ -10,7 +9,7 @@
 #include <geometry_msgs/Twist.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <move_base_msgs/MoveBaseGoal.h>
-#include <visualization_msgs/Marker.h>
+//#include <visualization_msgs/Marker.h>
 #include <math.h>
 #include <stdio.h>
 
@@ -21,77 +20,48 @@ using namespace std;
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> move_base;
 
 static geometry_msgs::Quaternion createQuaternionFromRPY(double roll, double pitch, double yaw);
+	
+
 
 int main(int argc,char** argv)
 {
 	ros::init(argc,argv,"nav_test");
 	ros::NodeHandle n;
-if (argc != 3){
-	ROS_INFO("you need two argu");
-	return -1;
-}
-
-	double x= atoll(argv[1]);
-	double y= atoll(argv[2]);
 
 	geometry_msgs::Quaternion quaternions[4];
-	double euler_angles[2]={pi,0};
+	double euler_angles[4]={0,0,0,0};
 
-	for(int i=0;i<2;i++)
+	for(int i=0;i<4;i++)
 	{
 		quaternions[i]=createQuaternionFromRPY(0,0,euler_angles[i]);
 	}
 
 	geometry_msgs::Pose waypoints;
 
-	waypoints.position.x=x;
-	waypoints.position.y=y;
+	waypoints.position.x=1.0;
+	waypoints.position.y=0.0;
 	waypoints.position.z=0.0;
 	waypoints.orientation.x=quaternions[0].x;
 	waypoints.orientation.y=quaternions[0].y;
 	waypoints.orientation.z=quaternions[0].z;
 	waypoints.orientation.w=quaternions[0].w;
 
-
-
-	move_base move_base("/robot1/move_base",true);
-
-	ROS_INFO("Waiting for move_base action server...");
-
+	move_base move_base("move_base",true);
 	move_base.waitForServer(ros::Duration(60));
 
-	ROS_INFO("Connected to move base server");
-	ROS_INFO("Starting navigation test");
+	//geometry_msgs::Pose waypoints[4];
 
-	
-		//marker_pub.publish(markers);
 		move_base_msgs::MoveBaseGoal goal;
 		goal.target_pose.header.frame_id="map";
 		goal.target_pose.header.stamp=ros::Time::now();
 		goal.target_pose.pose=waypoints;
-
 		move_base.sendGoal(goal);
-		bool finished_within_time=move_base.waitForResult(ros::Duration(60));
 
-		if(!finished_within_time)
-		{
-			move_base.cancelGoal();
-			ROS_INFO("Time out achieving goal");
-		}
-		else
-		{
-			if(move_base.getState()==actionlib::SimpleClientGoalState::SUCCEEDED)
-			{
-				ROS_INFO("Goal succeeded!");
-			}
-		}
+	ros::spin();
+	}
 
-
-	ros::shutdown();
-}
-
-static geometry_msgs::Quaternion createQuaternionFromRPY(double roll, double pitch, double yaw)
-{
+static geometry_msgs::Quaternion createQuaternionFromRPY(double roll, double pitch, double yaw) 
+{   
     geometry_msgs::Quaternion q;
     double t0 = cos(yaw * 0.5);
     double t1 = sin(yaw * 0.5);

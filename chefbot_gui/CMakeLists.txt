@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(chefbot_slam)
+project(chefbot_gui)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -8,13 +8,9 @@ project(chefbot_slam)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  actionlib
-  actionlib_msgs
-  geometry_msgs
-  move_base_msgs
   roscpp
+  rospy
   std_msgs
-  visualization_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -74,7 +70,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   actionlib_msgs#   geometry_msgs#   move_base_msgs#   std_msgs#   visualization_msgs
+#   std_msgs
 # )
 
 ################################################
@@ -108,8 +104,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES chefbot_slam
-#  CATKIN_DEPENDS actionlib actionlib_msgs geometry_msgs move_base_msgs roscpp std_msgs visualization_msgs
+#  LIBRARIES chefbot_gui
+#  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -126,7 +122,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/chefbot_slam.cpp
+#   src/${PROJECT_NAME}/chefbot_gui.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -137,7 +133,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/chefbot_slam_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/chefbot_gui_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -194,25 +190,10 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_chefbot_slam.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_chefbot_gui.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-add_executable(square_1m src/square.cpp)
-target_link_libraries(square_1m ${catkin_LIBRARIES})
-
-add_executable(forward src/forward.cpp)
-target_link_libraries(forward ${catkin_LIBRARIES})
-
-add_executable(move_base_fw_bw src/move_base_fw_bw.cpp)
-target_link_libraries(move_base_fw_bw ${catkin_LIBRARIES})
-
-add_executable(custom_x_y_goal src/custom_x_y_goal.cpp)
-target_link_libraries(custom_x_y_goal ${catkin_LIBRARIES})
-
-add_executable(send_goal src/send_goal.cpp)
-target_link_libraries(send_goal ${catkin_LIBRARIES})
