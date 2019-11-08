@@ -13,8 +13,8 @@
 bool publish_tf = false;
 bool use_imu = false;
 
-double rpm_act1 = 0.0;
-double rpm_act2 = 0.0;
+double right_act_rpm = 0.0;
+double left_act_rpm = 0.0;
 double rpm_req1 = 0.0;
 double rpm_req2 = 0.0;
 double gyro_x = 0.0;
@@ -24,6 +24,9 @@ double rpm_dt = 0.0;
 double x_pos = 0.0;
 double y_pos = 0.0;
 double theta = 0.0;
+double delta_x = 0.0;
+double delta_y = 0.0;
+double delta_theta = 0.0;
 //float roll = 0.0;
 //float pitch= 0.0;
 //float yaw = 0.0;
@@ -34,8 +37,8 @@ ros::Time last_time(0.0);
 
 
 void handle_rpm( const geometry_msgs::Vector3Stamped& rpm) {
-  rpm_act1 = rpm.vector.x;
-  rpm_act2 = rpm.vector.y;
+  right_act_rpm = rpm.vector.x;
+  left_act_rpm = rpm.vector.y;
   rpm_dt = rpm.vector.z;
   rpm_time = rpm.header.stamp;
 }
@@ -70,17 +73,17 @@ int main(int argc, char** argv){
   double alpha = 0.0;
 
   double dt = 0.0;
-  double dx = 0.0;
-  double dy = 0.0;
+  double x = 0.0;
+  double y = 0.0;
 
-  double dth_odom = 0.0;
+  double angular_displacement = 0.0;
   double dth_gyro = 0.0;
   double dth = 0.0;
 
   double dth_prev = 0.0;
   double dth_curr = 0.0;
   double dxy_prev = 0.0;
-  double dxy_ave = 0.0;
+  double linear_displacement = 0.0;
   double vx = 0.0;
   double vy = 0.0;
   double vth = 0.0;
@@ -104,33 +107,37 @@ int main(int argc, char** argv){
     // ros::topic::waitForMessage<geometry_msgs::Vector3Stamped>("rpm", n, d);
     current_time = ros::Time::now();
     dt = rpm_dt;
-    // average_rpm = (rpm_act1+rpm_act2) / 2;
+    // linear_displacement = (right_act_rpm+left_act_rpm) / 2;
     // rpm to wheel velocity
     // (X rev/1 min) x (1 min/60s) x (pi*d/1 rev)
     //  velocity to distance
-    //  dxy_ave = v * dt
+    //  linear_displacement = v * dt
 
-    dxy_ave = (rpm_act1+rpm_act2)*dt*wheel_diameter*pi/(60*2);
-    //dth_odom = (rpm_act1-rpm_act2)/track_width;
-    //dth_odom = dth_odom*dt*wheel_diameter*pi/60;
+    linear_displacement = (right_act_rpm+left_act_rpm)*dt*wheel_diameter*pi/(60*2);
+    //angular_displacement = (right_act_rpm-left_act_rpm)/track_width;
+    //angular_displacement = angular_displacement*dt*wheel_diameter*pi/60;
     // s=r * theta , theta = s/r , theta is always radian
-    dth_odom = (rpm_act1-rpm_act2)*dt*wheel_diameter*pi/(60*track_width);
+    angular_displacement = (right_act_rpm-left_act_rpm)*dt*wheel_diameter*pi/(60*track_width);
 
     if (use_imu) dth_gyro = dt*gyro_z;
-    dth = alpha*dth_odom + (1-alpha)*dth_gyro;
-    dth = alpha*dth_odom;
+    dth = alpha*angular_displacement + (1-alpha)*dth_gyro;
+    dth = alpha*angular_displacement;
 
     if (dth > 0) dth *= angular_scale_positive;
     if (dth < 0) dth *= angular_scale_negative;
-    if (dxy_ave > 0) dxy_ave *= linear_scale_positive;
-    if (dxy_ave < 0) dxy_ave *= linear_scale_negative;
+    if (linear_displacement > 0) linear_displacement *= linear_scale_positive;
+    if (linear_displacement < 0) linear_displacement *= linear_scale_negative;
 //-----------------------------------------------------------------//
-    dx = cos(dth) * dxy_ave;
-    dy = -sin(dth) * dxy_ave; // Why minus?
+    x = cos(dth) * linear_displacement;
+    y = -sin(dth) * linear_displacement; // Why minus?
 
-    x_pos += (cos(theta) * dx - sin(theta) * dy);
-    y_pos += (sin(theta) * dx + cos(theta) * dy);
-    theta += dth;
+    delta_x = (cos(theta) * x - sin(theta) * y);
+    delta_y = (sin(theta) * x + cos(theta) * y);
+    delta_theta = dth;
+
+    x_pos += delta_x;
+    y_pos += delta_y;
+    theta += delta_theta;
 
     if(theta >= two_pi) theta -= two_pi;
     if(theta <= -two_pi) theta += two_pi;
@@ -159,7 +166,7 @@ int main(int argc, char** argv){
     odom_msg.pose.pose.orientation = odom_quat;
 
 
-    if (rpm_act1 == 0 && rpm_act2 == 0){
+    if (right_act_rpm == 0 && left_act_rpm == 0){
       odom_msg.pose.covariance[0] = 1e-9;
       odom_msg.pose.covariance[7] = 1e-3;
       odom_msg.pose.covariance[8] = 1e-9;
@@ -191,7 +198,7 @@ int main(int argc, char** argv){
       odom_msg.twist.covariance[28] = 1e6;
       odom_msg.twist.covariance[35] = 1e3;
     }
-    vx = (dt == 0)?  0 : dxy_ave/dt;
+    vx = (dt == 0)?  0 : linear_displacement/dt;
     vth = (dt == 0)? 0 : dth/dt;
     odom_msg.child_frame_id = base_link;
     odom_msg.twist.twist.linear.x = vx;

@@ -1,0 +1,50 @@
+digraph G {
+node [shape=box];
+"base_link" [label="base_link"];
+"camera_rgb_frame" [label="camera_rgb_frame"];
+"camera_depth_frame" [label="camera_depth_frame"];
+"camera_depth_optical_frame" [label="camera_depth_optical_frame"];
+"camera_link" [label="camera_link"];
+"camera_rgb_optical_frame" [label="camera_rgb_optical_frame"];
+"chefbot_caster_front_link" [label="chefbot_caster_front_link"];
+"chefbot_caster_back_link" [label="chefbot_caster_back_link"];
+"cliff_sensor_front_link" [label="cliff_sensor_front_link"];
+"cliff_sensor_left_link" [label="cliff_sensor_left_link"];
+"cliff_sensor_right_link" [label="cliff_sensor_right_link"];
+"gyro_link" [label="gyro_link"];
+"left_axle_link" [label="left_axle_link"];
+"left_wheel_link" [label="left_wheel_link"];
+"right_axle_link" [label="right_axle_link"];
+"right_wheel_link" [label="right_wheel_link"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"base_link" -> "camera_rgb_joint" [label="xyz: -0.087 -0.0125 0.287 \nrpy: 0 -0 0"]
+"camera_rgb_joint" -> "camera_rgb_frame"
+"camera_rgb_frame" -> "camera_depth_joint" [label="xyz: 0 0.025 0 \nrpy: 0 -0 0"]
+"camera_depth_joint" -> "camera_depth_frame"
+"camera_depth_frame" -> "camera_depth_optical_joint" [label="xyz: 0 0 0 \nrpy: -1.5708 -5.55112e-17 -1.5708"]
+"camera_depth_optical_joint" -> "camera_depth_optical_frame"
+"camera_rgb_frame" -> "camera_joint" [label="xyz: -0.031 0.0125 -0.016 \nrpy: 0 -0 0"]
+"camera_joint" -> "camera_link"
+"camera_rgb_frame" -> "camera_rgb_optical_joint" [label="xyz: 0 0 0 \nrpy: -1.5708 -5.55112e-17 -1.5708"]
+"camera_rgb_optical_joint" -> "camera_rgb_optical_frame"
+"base_link" -> "caster_front_joint" [label="xyz: 0.115 0 0.007 \nrpy: -1.5708 0 0"]
+"caster_front_joint" -> "chefbot_caster_front_link"
+"base_link" -> "chefbot_caster_back_joint" [label="xyz: -0.135 0 0.009 \nrpy: -1.5708 0 0"]
+"chefbot_caster_back_joint" -> "chefbot_caster_back_link"
+"base_link" -> "cliff_sensor_front_joint" [label="xyz: 0.156 0 0.0214 \nrpy: 0 1.5708 -0"]
+"cliff_sensor_front_joint" -> "cliff_sensor_front_link"
+"base_link" -> "cliff_sensor_left_joint" [label="xyz: 0.08734 0.13601 0.0214 \nrpy: 0 1.5708 -0"]
+"cliff_sensor_left_joint" -> "cliff_sensor_left_link"
+"base_link" -> "cliff_sensor_right_joint" [label="xyz: 0.085 -0.13601 0.0214 \nrpy: 0 1.5708 -0"]
+"cliff_sensor_right_joint" -> "cliff_sensor_right_link"
+"base_link" -> "gyro_joint" [label="xyz: 0.056 0.062 0.0202 \nrpy: 0 -0 0"]
+"gyro_joint" -> "gyro_link"
+"base_link" -> "left_axle_joint" [label="xyz: 0 0.171475 0.0178 \nrpy: 0 -0 0"]
+"left_axle_joint" -> "left_axle_link"
+"left_axle_link" -> "left_wheel_joint" [label="xyz: 0 0.01905 0 \nrpy: 0 -0 0"]
+"left_wheel_joint" -> "left_wheel_link"
+"base_link" -> "right_axle_joint" [label="xyz: 0 -0.171475 0.0178 \nrpy: 0 -0 0"]
+"right_axle_joint" -> "right_axle_link"
+"right_axle_link" -> "right_wheel_joint" [label="xyz: 0 -0.01905 0 \nrpy: 0 -0 0"]
+"right_wheel_joint" -> "right_wheel_link"
+}

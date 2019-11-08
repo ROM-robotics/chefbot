@@ -10,21 +10,21 @@ int subscribe_count;
 int publish_count;
 
 void twistCallback( const geometry_msgs::Twist& cmd_msg) {
- double x = cmd_msg.linear.x;
- double theta = cmd_msg.angular.z;
+ double v = cmd_msg.linear.x;
+ double omega = cmd_msg.angular.z;
 
  // Velocity to left velocity and right velocity(wheel velocity)
- double right = 1.0 * x + (theta * track_width / 2);
- double left  = 1.0 * x - (theta * track_width / 2);
+ double V_right = 1.0 * v + (omega * track_width / 2);
+ double V_left  = 1.0 * v - (omega * track_width / 2);
 
  // ms to rpm
- right = right *60 / (pi * wheel_diameter);
- left  = left  *60 / (pi * wheel_diameter);
+ V_right = V_right *60 / (pi * wheel_diameter);
+ V_left  = V_left  *60 / (pi * wheel_diameter);
 
- req_right = right;
- req_left = left;
+ req_right = V_right;
+ req_left = V_left;
  //ROS_INFO_STREAM("Count : "<< subscribe_count);
- //ROS_INFO_STREAM("right: "<< right << " left: "<< left);
+ //ROS_INFO_STREAM("V_right: "<< V_right << " V_left: "<< V_left);
  subscribe_count++;
 
 }
@@ -72,20 +72,20 @@ int main(int argc,char** argv)
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // void twistCallback( const geometry_msgs::Twist& cmd_msg) {
-//   double x = cmd_msg.linear.x;
-//   double theta = cmd_msg.angular.z;
-//   if (theta == 0) {     // go straight
+//   double v = cmd_msg.linear.x;
+//   double omega = cmd_msg.angular.z;
+//   if (omega == 0) {     // go straight
 //     // convert m/s to rpm
-//     req_right = x*60/(pi*wheel_diameter);
+//     req_right = v*60/(pi*wheel_diameter);
 //     req_left = req_right;
 //   }
-//   else if (x == 0) {
+//   else if (v == 0) {
 //     // convert rad/s to rpm
-//     req_left = theta*track_width*60/(wheel_diameter*pi*2);
+//     req_left = omega*track_width*60/(wheel_diameter*pi*2);
 //     req_right = -req_left;
 //   }
 //   else {
-//     req_right = x*60/(pi*wheel_diameter)-theta*track_width*60/(wheel_diameter*pi*2);
-//     req_left = x*60/(pi*wheel_diameter)+theta*track_width*60/(wheel_diameter*pi*2);
+//     req_right = v*60/(pi*wheel_diameter)-omega*track_width*60/(wheel_diameter*pi*2);
+//     req_left = v*60/(pi*wheel_diameter)+omega*track_width*60/(wheel_diameter*pi*2);
 //   }
 // }
