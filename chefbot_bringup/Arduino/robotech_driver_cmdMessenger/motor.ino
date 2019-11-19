@@ -30,10 +30,12 @@ int updatePid(int id, int old_pwm, double targetValue, double currentValue) {
   float Ki =  0.00052;
   float Kd =   1.9;
 
-  float p = 0.45;     //Right 
-  float i =  0.00049;
-  float d = 1.9;
-
+  //float p = 0.45;     //Right 
+  //float i =  0.00049;
+  //float d = 1.9;
+  float p =   0.65;
+  float i =   0.00005;
+  float d =   0.6;
   error = targetValue - currentValue;
   
   if (id == 1) { // Right
