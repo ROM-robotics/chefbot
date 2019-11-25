@@ -202,17 +202,17 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(square_1m src/square.cpp)
-target_link_libraries(square_1m ${catkin_LIBRARIES})
+#add_executable(square_1m src/square.cpp)
+#target_link_libraries(square_1m ${catkin_LIBRARIES})
 
-add_executable(forward src/forward.cpp)
-target_link_libraries(forward ${catkin_LIBRARIES})
+#add_executable(forward src/forward.cpp)
+#target_link_libraries(forward ${catkin_LIBRARIES})
 
-add_executable(move_base_fw_bw src/move_base_fw_bw.cpp)
-target_link_libraries(move_base_fw_bw ${catkin_LIBRARIES})
+#add_executable(move_base_fw_bw src/move_base_fw_bw.cpp)
+#target_link_libraries(move_base_fw_bw ${catkin_LIBRARIES})
 
-add_executable(custom_x_y_goal src/custom_x_y_goal.cpp)
-target_link_libraries(custom_x_y_goal ${catkin_LIBRARIES})
+#add_executable(custom_x_y_goal src/custom_x_y_goal.cpp)
+#target_link_libraries(custom_x_y_goal ${catkin_LIBRARIES})
 
-add_executable(send_goal src/send_goal.cpp)
-target_link_libraries(send_goal ${catkin_LIBRARIES})
+#add_executable(send_goal src/send_goal.cpp)
+#target_link_libraries(send_goal ${catkin_LIBRARIES})
