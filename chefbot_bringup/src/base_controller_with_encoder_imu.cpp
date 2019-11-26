@@ -3,6 +3,8 @@
 #include <sensor_msgs/Imu.h>
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Vector3.h>
+#include <geometry_msgs/Quaternion.h>
+#include <chefbot_bringup/vect4.h>
 #include <stdio.h>
 #include <cmath>
 #include <algorithm>
@@ -10,52 +12,48 @@
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
-bool publish_tf = false;
+bool publish_tf = true;
 bool use_imu = false;
 
-double right_act_rpm = 0.0;
-double left_act_rpm = 0.0;
-double rpm_req1 = 0.0;
-double rpm_req2 = 0.0;
-double gyro_x = 0.0;
-double gyro_y = 0.0;
-double gyro_z = 0.0;
-double rpm_dt = 0.0;
-double x_pos = 0.0;
-double y_pos = 0.0;
-double theta = 0.0;
-double delta_x = 0.0;
-double delta_y = 0.0;
-double delta_theta = 0.0;
-//float roll = 0.0;
-//float pitch= 0.0;
-//float yaw = 0.0;
+double prev_right = 0;
+double prev_left  = 0;
+double right_count= 0;
+double left_count = 0;
+double delta_r_count = 0;
+double delta_l_count = 0;
+
+float delta_time  = 0.0;
+float dt = 0.0;
+
+float gyro_theta = 0.0;
+float prev_gyro_theta = 0.0;    
+
+double x_pos = 0; double y_pos = 0;
+double theta = 0.0; double delta_theta = 0.0; // or Float
+double delta_x = 0.0; double delta_y = 0.0; 
+
+double alpha = 0.0;
 
 ros::Time current_time;
-ros::Time rpm_time(0.0);
 ros::Time last_time(0.0);
 
+void handle_rpm( const chefbot_bringup::vect4& vect) {
+  right_count = vect.right_count;
+  left_count  = vect.left_count;
+  delta_time  = vect.delta_time;
+  int degree  = vect.degree;
 
-void handle_rpm( const geometry_msgs::Vector3Stamped& rpm) {
-  right_act_rpm = rpm.vector.x;
-  left_act_rpm = rpm.vector.y;
-  rpm_dt = rpm.vector.z;
-  rpm_time = rpm.header.stamp;
+  gyro_theta = degree * pi / 180.0;  // angular displacement
 }
-// void handle_quat( const geometry_msgs::Vector3 gyro) {
-//   //roll = imu.vector.x;
-//   //pitch= imu.vector.y;
-//   //yaw  = imu.vector.z;
-//   gyro_z = gyro.z;
-// }
+
 
 int main(int argc, char** argv){
   ros::init(argc, argv, "base_controller");
 
   ros::NodeHandle n;
   ros::NodeHandle nh_private_("~");
+  ros::Duration(10).sleep();
   ros::Subscriber sub = n.subscribe("rpm_act_msg", 50, handle_rpm);
-  //ros::Subscriber imu_sub = n.subscribe("android_gyro", 50, handle_quat);
   ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odom", 50);
   tf::TransformBroadcaster broadcaster;
 
@@ -65,31 +63,20 @@ int main(int argc, char** argv){
   double angular_scale_positive = 1.0;
   double angular_scale_negative = 1.0;
   double angular_scale_accel = 1.0;
-
-  double acc_theta = 0.0;
-  double acc_x = 0.0;
-  double acc_max_theta = 0.0;
-  double acc_max_x = 0.0;
-  double alpha = 0.0;
-
-  double dt = 0.0;
   double x = 0.0;
   double y = 0.0;
+  double ang_displacement = 0.0;
+  double lin_displacement = 0.0;
 
-  double angular_displacement = 0.0;
-  double dth_gyro = 0.0;
   double dth = 0.0;
 
-  double dth_prev = 0.0;
-  double dth_curr = 0.0;
-  double dxy_prev = 0.0;
-  double linear_displacement = 0.0;
+  char base_link[] = "base_link";
+  char odom[] = "odom";
+
   double vx = 0.0;
   double vy = 0.0;
   double vth = 0.0;
 
-  char base_link[] = "base_link";
-  char odom[] = "/odom";
   ros::Duration d(1.0);
   nh_private_.getParam("publish_rate", rate);
   nh_private_.getParam("publish_tf", publish_tf);
@@ -99,45 +86,37 @@ int main(int argc, char** argv){
   nh_private_.getParam("angular_scale_negative", angular_scale_negative);
   nh_private_.getParam("angular_scale_accel", angular_scale_accel);
   nh_private_.getParam("alpha", alpha);
-  nh_private_.getParam("use_imu", use_imu);
 
   ros::Rate r(rate);
   while(n.ok()){
     ros::spinOnce();
-    // ros::topic::waitForMessage<geometry_msgs::Vector3Stamped>("rpm", n, d);
     current_time = ros::Time::now();
-    dt = rpm_dt;
-    // linear_displacement = (right_act_rpm+left_act_rpm) / 2;
-    // rpm to wheel velocity
-    // (X rev/1 min) x (1 min/60s) x (pi*d/1 rev)
-    //  velocity to distance
-    //  linear_displacement = v * dt
+    dt = delta_time;
+    double r_count=0, l_count = 0;
+    r_count = right_count; l_count = left_count;
+    delta_r_count = r_count - prev_right;
+    delta_l_count = l_count - prev_left;
+    prev_right = r_count;
+    prev_left  = l_count;
 
-    linear_displacement = (right_act_rpm+left_act_rpm)*dt*wheel_diameter*pi/(60*2);
-    //angular_displacement = (right_act_rpm-left_act_rpm)/track_width;
-    //angular_displacement = angular_displacement*dt*wheel_diameter*pi/60;
-    // s=r * theta , theta = s/r , theta is always radian
-    angular_displacement = (right_act_rpm-left_act_rpm)*dt*wheel_diameter*pi/(60*track_width);
 
-    //if (use_imu) dth_gyro = dt*gyro_z;
-    //dth = alpha*angular_displacement + (1-alpha)*dth_gyro;
-    dth = alpha*angular_displacement;
+    double average_count = (delta_r_count + delta_l_count) / 2.0;
+    lin_displacement = (average_count * pi * wheel_diameter * dt) / enc_ticks; // dxy_ave
 
-    if (dth > 0) dth *= angular_scale_positive;
-    if (dth < 0) dth *= angular_scale_negative;
-    if (linear_displacement > 0) linear_displacement *= linear_scale_positive;
-    if (linear_displacement < 0) linear_displacement *= linear_scale_negative;
-//-----------------------------------------------------------------//
-    x = cos(dth) * linear_displacement;
-    y = -sin(dth) * linear_displacement; // Why minus?
+    //float step = ( pi * wheel_diameter ) / enc_ticks;
+    //ang_displacement = (delta_r_count - delta_l_count) * step / track_width;
+    ang_displacement = gyro_theta - prev_gyro_theta;
+    prev_gyro_theta = gyro_theta;
 
-    delta_x = (cos(theta) * x - sin(theta) * y);
-    delta_y = (sin(theta) * x + cos(theta) * y);
-    delta_theta = dth;
+    dth = alpha * ang_displacement;  
+    
+    x = cos(dth) * lin_displacement;
+    y = -sin(dth) * lin_displacement; // Why minus?
 
-    x_pos += delta_x;
-    y_pos += delta_y;
-    theta += delta_theta;
+    x_pos += (cos(theta) * x - sin(theta) * y);
+    y_pos += (sin(theta) * x + cos(theta) * y);
+    theta += dth;
+    //theta = current_gyro_theta;
 
     if(theta >= two_pi) theta -= two_pi;
     if(theta <= -two_pi) theta += two_pi;
@@ -166,7 +145,7 @@ int main(int argc, char** argv){
     odom_msg.pose.pose.orientation = odom_quat;
 
 
-    if (right_act_rpm == 0 && left_act_rpm == 0){
+    if (right_count == prev_right && left_count == prev_left){
       odom_msg.pose.covariance[0] = 1e-9;
       odom_msg.pose.covariance[7] = 1e-3;
       odom_msg.pose.covariance[8] = 1e-9;
@@ -198,8 +177,8 @@ int main(int argc, char** argv){
       odom_msg.twist.covariance[28] = 1e6;
       odom_msg.twist.covariance[35] = 1e3;
     }
-    vx = (dt == 0)?  0 : linear_displacement/dt;
-    vth = (dt == 0)? 0 : dth/dt;
+    vx = (dt == 0)?  0 : lin_displacement/dt;
+    vth = (dt == 0)? 0 : ang_displacement/dt;
     odom_msg.child_frame_id = base_link;
     odom_msg.twist.twist.linear.x = vx;
     odom_msg.twist.twist.linear.y = 0.0;
@@ -210,12 +189,3 @@ int main(int argc, char** argv){
     r.sleep();
   }
 }
-/*
-msg.pose.covariance = {cov_x, 0, 0, 0, 0, 0,
-                        0, cov_y, 0, 0, 0, 0,
-                        0, 0, 99999, 0, 0, 0,
-                        0, 0, 0, 99999, 0, 0,
-                        0, 0, 0, 0, 99999, 0,
-                        0, 0, 0, 0, 0, rcov_z}
-
-*/

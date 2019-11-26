@@ -211,6 +211,12 @@ target_link_libraries(base_controller ${catkin_LIBRARIES})
 add_executable(base_controller_imu src/base_controller_with_imu.cpp)
 target_link_libraries(base_controller_imu ${catkin_LIBRARIES})
 
+add_executable(base_controller_encoder src/base_controller_with_encoder.cpp)
+target_link_libraries(base_controller_encoder ${catkin_LIBRARIES})
+
+add_executable(base_controller_encoder_imu src/base_controller_with_encoder_imu.cpp)
+target_link_libraries(base_controller_encoder_imu ${catkin_LIBRARIES})
+
 add_executable(forward_1meter src/forward_1m.cpp)
 target_link_libraries(forward_1meter ${catkin_LIBRARIES})
 
