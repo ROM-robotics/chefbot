@@ -24,10 +24,10 @@ import math
 from SerialDataGateway import SerialDataGateway
 #Importing ROS data types
 from std_msgs.msg import String
-from geometry_msgs.msg import Vector3Stamped
+from geometry_msgs.msg import Vector3Stamped, Quaternion
 from chefbot_bringup.msg import rpm
 #Importing ROS data type for IMU
-from sensor_msgs.msg import Imu
+#from sensor_msgs.msg import Imu
 
 #Class to handle serial data from Arduino and converted to ROS topics
 class Arduino_Class(object):
@@ -43,19 +43,21 @@ class Arduino_Class(object):
 		self.actual_right = 0 # vector x
 		self.actual_left = 0  # vector y
 		self.time_ = 0.0        # time difference
-
-		self.gyro_X = 0.0
-		self.gyro_Y = 0.0
-		self.gyro_Z = 0.0
-		self.accel_X= 0.0
-		self.accel_Y= 0.0
-		self.accel_Z= 0.0
+		self.theta = 0.0
+		self.degree = 0.0
+		# self.gyro_X = 0.0
+		# self.gyro_Y = 0.0
+		# self.gyro_Z = 0.0
+		# self.accel_X= 0.0
+		# self.accel_Y= 0.0
+		# self.accel_Z= 0.0
 
 		self._Counter=0
 
 
 
 		self.vector3 = Vector3Stamped()
+		self.QuatTypeData = Quaternion()
 #######################################################################################################################
 		#Get serial port and baud rate of Tiva C Arduino
 		port = rospy.get_param("~port", "/dev/ttyACM0")
@@ -73,8 +75,8 @@ class Arduino_Class(object):
 
 		self._Req_subscriber = rospy.Subscriber('rpm_req_msg',rpm,self._Handle_rpm_request)
 
-		self._Act_publisher = rospy.Publisher('rpm_act_msg',Vector3Stamped,queue_size = 10)
-		self._Imu_publisher = rospy.Publisher('mpu9250_imu',Imu,queue_size=10)
+		self._Act_publisher = rospy.Publisher('rpm_act_msg',Quaternion,queue_size = 10)
+		#self._Imu_publisher = rospy.Publisher('mpu9250_imu',Imu,queue_size=10)
 		#self._SerialPublisher = rospy.Publisher('serial', String,queue_size=10)
 
 
@@ -110,23 +112,24 @@ class Arduino_Class(object):
 					self.actual_right = float(li[1])
 					self.actual_left = float(li[2])
 					self.time_  = float(li[3])
+					self.degree  = float(li[4])
 					#rospy.loginfo(self.time_)
 					#rospy.loginfo("oK i got actual rpm")
 
-					self.vector3.header.stamp = ros_time
-					self.vector3.vector.x = self.actual_right
-					self.vector3.vector.y = self.actual_left
-					self.vector3.vector.z = self.time_
-					self._Act_publisher.publish(self.vector3)
+					self.QuatTypeData.x = self.actual_right
+					self.QuatTypeData.y = self.actual_left
+					self.QuatTypeData.z = self.time_
+					self.QuatTypeData.w = self.degree
+					self._Act_publisher.publish(self.QuatTypeData)
 
-				if(li[0] == '6'):
-					self.gyro_X = float(li[1])
-					self.gyro_Y = float(li[2])
-					self.gyro_Z = float(li[3])
-					self.acce_X = float(li[4])
-					self.acce_Y = float(li[5])
-					self.acce_Z = float(li[6])
-					#rospy.loginfo("oK i got imu")
+				# if(li[0] == '6'):
+				# 	self.gyro_X = float(li[1])
+				# 	self.gyro_Y = float(li[2])
+				# 	self.gyro_Z = float(li[3])
+				# 	self.acce_X = float(li[4])
+				# 	self.acce_Y = float(li[5])
+				# 	self.acce_Z = float(li[6])
+				# 	#rospy.loginfo("oK i got imu")
 
 
 			except:
