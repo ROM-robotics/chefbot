@@ -6,5 +6,6 @@
     <param name="port" value="/dev/ttyACM0" />
     <param name="baudRate" value="115200" />
   </node>
-  
+     <node pkg="carrier_joystick" type="Joystick" name="joystick"/>
+     <node pkg="joy" type="joy_node" name="joy"/>
 </launch>
