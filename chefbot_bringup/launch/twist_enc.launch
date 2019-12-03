@@ -1,0 +1,36 @@
+<launch>
+	<arg name="laser_scan" value="true"/>
+	<arg name="gmapping" value="true"/>
+	<arg name="amcl" value="true"/>
+
+	<node name="twistToMotors" pkg="chefbot_bringup" type="twist_to_motors" output="screen">
+    	<!--remap from="cmd_vel" to="cmd_navigation"/-->
+  	</node>
+
+	<node name="base_controller_node" pkg="chefbot_bringup" type="controller_enc">
+	    <param name="publish_tf" value="true" /> <!-- false for ekf -->
+	    <param name="use_imu" value="false" /> <!-- false for only encoder -->
+	    <param name="publish_rate" value="10.0" />
+	    <param name="linear_scale_positive" value="0.86" />
+	    <param name="linear_scale_negative" value="0.86" />
+	    <param name="angular_scale_positive" value="2.1" />
+	    <param name="angular_scale_negative" value="2.1" />
+	    <param name="angular_scale_accel" value="0.0" />
+	    <param name="alpha" value="0.5" />
+	 
+	</node>
+
+
+	<group if="$(eval laser_scan == true)">
+	 	<include file="$(find rplidar_ros)/launch/rplidar.launch" />
+	 	<node name="baselink_laser_tf" type="static_transform_publisher" pkg="tf" args="0 0 0.1 0 0 0 1  /base_link laser  100"/>
+	</group>
+
+	<group if="$(eval gmapping == true)">
+	 	<include file="$(find chefbot_slam)/launch/gmapping_demo.launch" />
+	</group>
+
+	<group if="$(eval amcl == true)">
+	 	<include file="$(find chefbot_slam)/launch/amcl_demo.launch" />
+	</group>
+</launch>

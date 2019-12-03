@@ -1,0 +1,17 @@
+<launch>
+
+
+
+  <include file="$(find chefbot_bringup)/launch/urdf.launch" />
+
+ <node name="arduino_node" pkg="chefbot_bringup" type="arduino_node_with_remove_imu_remove_serial.py" output="screen">
+    <param name="port" value="/dev/ttyACM0" />
+    <param name="baudRate" value="115200" />
+  </node>
+  
+
+
+
+
+
+</launch>

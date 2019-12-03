@@ -1,0 +1,12 @@
+<launch>
+	<!--serial communication between arduino and pc via usb using cmdMessenger/ -->
+  <node name="arduino_node" pkg="chefbot_bringup" type="arduino_node_with_gyro_accel_imu.py" output="screen">
+    <param name="port" value="/dev/ttyACM0" />
+    <param name="baudRate" value="115200" />
+  </node>
+  <!--serial communication between arduino and pc via usb using ROS /
+  <node name="arduino_serial_node" pkg="rosserial_python" type="serial_node.py" output="screen">
+    <param name="port" value="/dev/ttyACM0" />
+    <param name="baud" value="57600" /> <rosparam name="iloveyou" value="1500"/>
+  </node> -->
+</launch>

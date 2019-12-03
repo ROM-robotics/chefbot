@@ -1,0 +1,16 @@
+<launch>
+
+	<!-- URDF model -->
+  <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find chefbot_description)/urdf/chefbot_base.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+	<!--param name="robot_description" textfile="$(find chefbot_bringup)/urdf/chefbot_base.urdf" />
+-->
+	<!-- The robot_state_publisher publishes the joints, otherwise your model is a pile white shapes all originating from 0, 0, 0 :) -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    	<param name="publish_frequency" type="double" value="5.0" /> <!-- check param -->
+	</node>
+	<arg name="model"/>
+  	<arg name="gui" default="false"/>
+  	<param name="use_gui" value="False"/>
+
+</launch>
