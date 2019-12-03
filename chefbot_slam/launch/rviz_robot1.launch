@@ -1,7 +1,0 @@
-<launch>
-
-  <group ns="robot1" >
-         <node type="rviz" name="rviz" pkg="rviz" args="-d $(find chefbot_slam)/rviz/robot1_slam.rviz" />
-  </group>
-
-</launch>

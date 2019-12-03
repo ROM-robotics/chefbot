@@ -1,3 +1,0 @@
-<launch>
-   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find chefbot_slam)/rviz/slam.rviz" />
-</launch>
