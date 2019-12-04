@@ -11,12 +11,12 @@
 	    <param name="publish_tf" value="true" /> <!-- false for ekf -->
 	    <param name="use_imu" value="false" /> <!-- false for only encoder -->
 	    <param name="publish_rate" value="10.0" />
-	    <param name="linear_scale_positive" value="0.86" />
-	    <param name="linear_scale_negative" value="0.86" />
-	    <param name="angular_scale_positive" value="2.1" />
-	    <param name="angular_scale_negative" value="2.1" />
+	    <param name="linear_scale_positive" value="1.0" />
+	    <param name="linear_scale_negative" value="1.0" />
+	    <param name="angular_scale_positive" value="1.0" />
+	    <param name="angular_scale_negative" value="1.0" />
 	    <param name="angular_scale_accel" value="0.0" />
-	    <param name="alpha" value="0.5" />
+	    <param name="alpha" value="1.0" />
 	 
 	</node>
 

@@ -1,6 +1,6 @@
 <launch>
 	<arg name="laser_scan" value="true"/>
-	<arg name="gmapping" value="true"/>
+	<arg name="gmapping" value="false"/>
 	<arg name="amcl" value="true"/>
 
 	<node name="twistToMotors" pkg="chefbot_bringup" type="twist_to_motors" output="screen">

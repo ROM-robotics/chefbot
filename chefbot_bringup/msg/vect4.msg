@@ -1,4 +1,4 @@
-float64 x
-float64 y
-float64 z
-float64 w
+int64 right_count
+int64 left_count
+float32 delta_time
+float32 degree

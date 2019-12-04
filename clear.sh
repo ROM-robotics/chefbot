@@ -2,5 +2,7 @@
 while true
 do
 	rosservice call /move_base/clear_costmaps
-	sleep 3
+        echo "cleared"
+	sleep 1
+        
 done

@@ -3,7 +3,7 @@
   <rosparam command="delete" ns="move_base" /> -->
 
   <!-- Map server
-  <arg name="map_file" default="$(find chefbot_slam)/map/test.yaml"/>
+  <arg name="map_file" default="$(find chefbot_slam)/map/test1.yaml"/>
   
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
    -->

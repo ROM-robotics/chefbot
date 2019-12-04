@@ -129,8 +129,8 @@ void loop() {
     }
     //setPWM();
     // updateIMU();
-    float y = x / 1000.0; // millis to seconds
-    sendMessage(y);
+    
+    sendMessage(x);
     lastMilli = time;
   }
   //if (time - lastMilliPub >= LOOPTIME) {

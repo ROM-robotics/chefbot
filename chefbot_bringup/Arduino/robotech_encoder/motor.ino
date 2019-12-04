@@ -10,8 +10,8 @@ void setupMotors() {
   Release();
 }
 void getMotorData(unsigned long time)  {
-  rpm_act1 = double((right_count - countAnt1) * 60000) / double(time * new_enc_ticks);
-  rpm_act2 = double((left_count - countAnt2) * 60000) / double(time * new_enc_ticks);
+  rpm_act1 = double((right_count - countAnt1) * 60000) / double(time * enc_ticks);
+  rpm_act2 = double((left_count - countAnt2) * 60000) / double(time * enc_ticks);
 
   countAnt1 = right_count;
   countAnt2 = left_count;

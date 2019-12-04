@@ -6,14 +6,14 @@ void setupMessenger(){
 }
 
 
-void sendMessage(float y) {
+void sendMessage(float x) {
+
+    float y = x / 1000.0; // millis to seconds
 
     cmdMessenger.sendCmdStart(actual_rpm);
-    cmdMessenger.sendCmdArg(rpm_act1);
-    cmdMessenger.sendCmdArg(rpm_act2); 
+    cmdMessenger.sendCmdArg(right_count);
+    cmdMessenger.sendCmdArg(left_count); 
     cmdMessenger.sendCmdArg(y,3);       // millis to seconds
-    cmdMessenger.sendCmdArg(PWM_val1);
-    cmdMessenger.sendCmdArg(PWM_val2);
     cmdMessenger.sendCmdArg(end_bit);
     cmdMessenger.sendCmdEnd();
 //    
