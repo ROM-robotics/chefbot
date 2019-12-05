@@ -105,7 +105,8 @@ int main(int argc, char** argv){
 
 
     double average_count = (delta_r_count + delta_l_count) / 2.0;
-    lin_displacement = (average_count * pi * wheel_diameter * dt) / enc_ticks; // dxy_ave
+    lin_displacement = (average_count * pi * wheel_diameter) / enc_ticks; // dxy_ave
+    //lin_displacement = (average_count * pi * wheel_diameter * dt) / enc_ticks; // dxy_ave
 
     float step = ( pi * wheel_diameter ) / enc_ticks;
     ang_displacement = (delta_r_count - delta_l_count) * step / track_width;
