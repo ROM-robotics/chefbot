@@ -211,6 +211,9 @@ target_link_libraries(controller_vel ${catkin_LIBRARIES})
 add_executable(controller_enc src/controller_enc.cpp)
 target_link_libraries(controller_enc ${catkin_LIBRARIES})
 
+add_executable(controller_imu src/controller_imu.cpp)
+target_link_libraries(controller_imu ${catkin_LIBRARIES})
+
 add_executable(twist_to_motors src/twist_to_motors.cpp)
 target_link_libraries(twist_to_motors ${catkin_LIBRARIES})
 

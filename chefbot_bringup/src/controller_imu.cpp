@@ -24,11 +24,11 @@ double delta_l_count = 0;
 
 float delta_time  = 0.0;
 float dt = 0.0;
+float omega = 0.0;
 
-float gyro_theta = 0.0;   // angular displacement
 
 double x_pos = 0; double y_pos = 0;
-double theta = 0.0; double delta_theta = 0.0; // or Float
+double theta = 0.0; double current_theta = 0.0; // or Float
 double delta_x = 0.0; double delta_y = 0.0; 
 
 double alpha = 0.0;
@@ -42,7 +42,7 @@ void handle_rpm( const chefbot_bringup::vect4& vect) {
   delta_time  = vect.delta_time;
   int degree  = vect.degree;
 
-  gyro_theta = degree * pi / 180.0;  // angular displacement
+  current_theta = degree * pi / 180.0;  // angular displacement
 }
 
 
@@ -108,8 +108,9 @@ int main(int argc, char** argv){
     lin_displacement = (average_count * pi * wheel_diameter) / enc_ticks; // dxy_ave
     //lin_displacement = (average_count * pi * wheel_diameter * dt) / enc_ticks; // dxy_ave
 
-    float step = ( pi * wheel_diameter ) / enc_ticks;
-    ang_displacement = (delta_r_count - delta_l_count) * step / track_width;
+    //float step = ( pi * wheel_diameter ) / enc_ticks;
+    ang_displacement = current_theta - theta;
+    omega = float(ang_displacement / dt);
 
     dth = alpha * ang_displacement;  
     
@@ -119,8 +120,7 @@ int main(int argc, char** argv){
     x_pos += (cos(theta) * x - sin(theta) * y);
     y_pos += (sin(theta) * x + cos(theta) * y);
     theta += dth;
-    //theta = current_gyro_theta;
-
+    
     if(theta >= two_pi) theta -= two_pi;
     if(theta <= -two_pi) theta += two_pi;
 
@@ -180,8 +180,8 @@ int main(int argc, char** argv){
       odom_msg.twist.covariance[28] = 1e6;
       odom_msg.twist.covariance[35] = 1e3;
     }
-    vx = (dt == 0)?  0 : lin_displacement/dt;
-    vth = (dt == 0)? 0 : ang_displacement/dt;
+    vx = (dt == 0.0)?  0.0 : float(lin_displacement/dt);
+    vth = (dt == 0.0)? 0.0 : float(ang_displacement/dt);
     odom_msg.child_frame_id = base_link;
     odom_msg.twist.twist.linear.x = vx;
     odom_msg.twist.twist.linear.y = 0.0;
