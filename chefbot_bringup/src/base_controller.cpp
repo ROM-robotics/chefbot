@@ -112,11 +112,13 @@ int main(int argc, char** argv){
     // (X rev/1 min) x (1 min/60s) x (pi*d/1 rev)
     //  velocity to distance
     //  linear_displacement = v * dt
-
-    linear_displacement = (right_act_rpm+left_act_rpm)*dt*wheel_diameter*pi/(60*2);
-    //angular_displacement = (right_act_rpm-left_act_rpm)/track_width;
-    //angular_displacement = angular_displacement*dt*wheel_diameter*pi/60;
+    // 
     // s=r * theta , theta = s/r , theta is always radian
+    
+    
+    linear_displacement = (right_act_rpm+left_act_rpm)*dt*wheel_diameter*pi/(60*2);
+    //angular_velocity = (right_act_rpm-left_act_rpm)/track_width;          
+    //angular_displacement = angular_velocity*dt*wheel_diameter*pi/60;     // rad per sec * sec per one = radian
     angular_displacement = (right_act_rpm-left_act_rpm)*dt*wheel_diameter*pi/(60*track_width);
 
     if (use_imu) dth_gyro = dt*gyro_z;
