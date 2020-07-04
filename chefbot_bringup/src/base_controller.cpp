@@ -131,7 +131,7 @@ int main(int argc, char** argv){
     if (linear_displacement < 0) linear_displacement *= linear_scale_negative;
 //-----------------------------------------------------------------//
     x = cos(dth) * linear_displacement;
-    y = -sin(dth) * linear_displacement; // Why minus?
+    y = -sin(dth) * linear_displacement; 
 
     delta_x = (cos(theta) * x - sin(theta) * y);
     delta_y = (sin(theta) * x + cos(theta) * y);
